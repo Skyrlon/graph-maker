@@ -17,7 +17,7 @@ function DataInputs() {
       position,
       value: e.target.value,
     });
-    setInputs(inputsModified);
+    setInputs([...inputsModified]);
   };
 
   return (
