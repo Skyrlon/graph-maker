@@ -1,4 +1,4 @@
-import { Add } from "@mui/icons-material";
+import { Add, Delete } from "@mui/icons-material";
 import { Box, IconButton, TextField } from "@mui/material";
 import { useState } from "react";
 import styled from "styled-components";
@@ -29,15 +29,26 @@ function DataInputs() {
     setInputs([...inputs, { position: lastInputPosition + 1, value: "" }]);
   };
 
+  const deleteInput = (inputPosition) => {
+    setInputs(inputs.filter((input) => input.position !== inputPosition));
+  };
+
   return (
     <StyledDataInputs>
       {inputs.map((input) => (
-        <TextField
+        <Box
           key={input.position}
-          type="number"
-          value={input.value}
-          onChange={(e) => handleChange(e, input.position)}
-        />
+          sx={{ display: "flex", flexDirection: "row" }}
+        >
+          <TextField
+            type="number"
+            value={input.value}
+            onChange={(e) => handleChange(e, input.position)}
+          />
+          <IconButton onClick={() => deleteInput(input.position)}>
+            <Delete />
+          </IconButton>
+        </Box>
       ))}
       <IconButton onClick={addInput} sx={{ width: "2rem", height: "2rem" }}>
         <Add />
