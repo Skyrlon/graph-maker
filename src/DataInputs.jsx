@@ -1,10 +1,14 @@
-import { Box, TextField } from "@mui/material";
+import { Add } from "@mui/icons-material";
+import { Box, IconButton, TextField } from "@mui/material";
 import { useState } from "react";
 import styled from "styled-components";
 
 const StyledDataInputs = styled(Box)`
   grid-area: data-inputs;
   border: 1px solid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 function DataInputs() {
@@ -20,6 +24,11 @@ function DataInputs() {
     setInputs([...inputsModified]);
   };
 
+  const addInput = () => {
+    const lastInputPosition = inputs[inputs.length - 1].position;
+    setInputs([...inputs, { position: lastInputPosition + 1, value: "" }]);
+  };
+
   return (
     <StyledDataInputs>
       {inputs.map((input) => (
@@ -30,6 +39,9 @@ function DataInputs() {
           onChange={(e) => handleChange(e, input.position)}
         />
       ))}
+      <IconButton onClick={addInput} sx={{ width: "2rem", height: "2rem" }}>
+        <Add />
+      </IconButton>
     </StyledDataInputs>
   );
 }
