@@ -12,21 +12,42 @@ const StyledDataInputs = styled(Box)`
 `;
 
 function DataInputs() {
-  const [inputs, setInputs] = useState([{ position: 0, value: "" }]);
+  const [inputs, setInputs] = useState([
+    { position: 0, firstInputValue: "", secondInputValue: "" },
+  ]);
 
-  const handleChange = (e, position) => {
-    const inputToModify = inputs.find((input) => input.position === position);
-    let inputsModified = inputs;
-    inputsModified.splice(inputs.indexOf(inputToModify), 1, {
-      position,
-      value: e.target.value,
-    });
-    setInputs([...inputsModified]);
+  const handleFirstInputChange = (e, position) => {
+    setInputs(
+      inputs.map((input) => {
+        if (input.position === position) {
+          return { ...input, firstInputValue: e.target.value };
+        }
+        return input;
+      })
+    );
+  };
+
+  const handleSecondInputChange = (e, position) => {
+    setInputs(
+      inputs.map((input) => {
+        if (input.position === position) {
+          return { ...input, secondInputValue: e.target.value };
+        }
+        return input;
+      })
+    );
   };
 
   const addInput = () => {
     const lastInputPosition = inputs[inputs.length - 1].position;
-    setInputs([...inputs, { position: lastInputPosition + 1, value: "" }]);
+    setInputs([
+      ...inputs,
+      {
+        position: lastInputPosition + 1,
+        firstInputValue: "",
+        secondInputValue: "",
+      },
+    ]);
   };
 
   const deleteInput = (inputPosition) => {
@@ -42,8 +63,13 @@ function DataInputs() {
         >
           <TextField
             type="number"
-            value={input.value}
-            onChange={(e) => handleChange(e, input.position)}
+            value={input.firstInputValue}
+            onChange={(e) => handleFirstInputChange(e, input.position)}
+          />
+          <TextField
+            type="number"
+            value={input.secondInputValue}
+            onChange={(e) => handleSecondInputChange(e, input.position)}
           />
           <IconButton onClick={() => deleteInput(input.position)}>
             <Delete />
