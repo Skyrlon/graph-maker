@@ -9,6 +9,10 @@ const StyledDataInputs = styled(Box)`
   display: flex;
   flex-direction: column;
   align-items: center;
+  & > * {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
 `;
 
 function DataInputs() {
@@ -56,10 +60,25 @@ function DataInputs() {
 
   return (
     <StyledDataInputs>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <TextField label="x-axis" variant="standard"></TextField>
+        <TextField label="y-axis" variant="standard"></TextField>
+      </Box>
+
       {inputs.map((input) => (
         <Box
           key={input.position}
-          sx={{ display: "flex", flexDirection: "row" }}
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
         >
           <TextField
             type="number"
