@@ -18,6 +18,7 @@ const StyledDataInputs = styled(Box)`
 function DataInputs() {
   const [inputs, setInputs] = useState([
     { position: 0, firstInputValue: "", secondInputValue: "" },
+    { position: 1, firstInputValue: "", secondInputValue: "" },
   ]);
 
   const handleFirstInputChange = (e, position) => {
@@ -90,9 +91,11 @@ function DataInputs() {
             value={input.secondInputValue}
             onChange={(e) => handleSecondInputChange(e, input.position)}
           />
-          <IconButton onClick={() => deleteInput(input.position)}>
-            <Delete />
-          </IconButton>
+          {!(input.position === 0 || input.position === 1) && (
+            <IconButton onClick={() => deleteInput(input.position)}>
+              <Delete />
+            </IconButton>
+          )}
         </Box>
       ))}
       <IconButton onClick={addInput} sx={{ width: "2rem", height: "2rem" }}>
