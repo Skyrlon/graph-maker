@@ -1,5 +1,5 @@
 import { Add, Delete } from "@mui/icons-material";
-import { Box, IconButton, TextField } from "@mui/material";
+import { Box, Button, IconButton, TextField } from "@mui/material";
 import { useState } from "react";
 import styled from "styled-components";
 
@@ -15,7 +15,7 @@ const StyledDataInputs = styled(Box)`
   }
 `;
 
-function DataInputs() {
+function DataInputs({ dataSubmit }) {
   const [inputs, setInputs] = useState([
     { position: 0, firstInputValue: "", secondInputValue: "" },
     { position: 1, firstInputValue: "", secondInputValue: "" },
@@ -57,6 +57,13 @@ function DataInputs() {
 
   const deleteInput = (inputPosition) => {
     setInputs(inputs.filter((input) => input.position !== inputPosition));
+  };
+
+  const handleSubmit = () => {
+    const dataToSubmit = inputs.map((input) => {
+      return { x: input.firstInputValue, y: input.secondInputValue };
+    });
+    dataSubmit(dataToSubmit);
   };
 
   return (
@@ -101,6 +108,7 @@ function DataInputs() {
       <IconButton onClick={addInput} sx={{ width: "2rem", height: "2rem" }}>
         <Add />
       </IconButton>
+      <Button onClick={handleSubmit}>Submit</Button>
     </StyledDataInputs>
   );
 }

@@ -2,6 +2,7 @@ import "./App.css";
 import { AppBar, Box, Toolbar, Typography } from "@mui/material";
 import DataInputs from "./DataInputs";
 import styled from "styled-components";
+import { useState } from "react";
 
 const StyledBox = styled(Box)`
   display: grid;
@@ -14,6 +15,14 @@ const StyledBox = styled(Box)`
 `;
 
 function App() {
+  const [data, setData] = useState();
+
+  const handleDataSubmitted = (dataSubmitted) => {
+    const sortedData = dataSubmitted;
+    sortedData.sort((a, b) => a.x - b.x);
+    setData(sortedData);
+  };
+
   return (
     <div className="App">
       <AppBar component="nav" position="sticky">
@@ -24,7 +33,7 @@ function App() {
         </Toolbar>
       </AppBar>
       <StyledBox>
-        <DataInputs />
+        <DataInputs dataSubmit={handleDataSubmitted} />
       </StyledBox>
     </div>
   );
