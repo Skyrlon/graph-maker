@@ -11,15 +11,21 @@ function Graph({ data }) {
     return sortedArray[sortedArray.length - 1].y;
   };
 
+  const findOrderOfMagnitude = (number) => {
+    return Math.pow(10, Math.ceil(number).toString().length - 1);
+  };
+
   const xAxisLength =
     data &&
-    Math.pow(10, Math.ceil(data[data.length - 1].x).toString().length - 1) *
-      Math.ceil(data[data.length - 1].x);
+    findOrderOfMagnitude(data[data.length - 1].x) *
+      Math.ceil(
+        data[data.length - 1].x / findOrderOfMagnitude(data[data.length - 1].x)
+      );
 
   const yAxisLength =
     data &&
-    Math.pow(10, Math.ceil(findLargestY(data)).toString().length - 1) *
-      Math.ceil(findLargestY(data));
+    findOrderOfMagnitude(findLargestY(data)) *
+      Math.ceil(findLargestY(data) / findOrderOfMagnitude(findLargestY(data)));
 
   return (
     <StyledGraph>
@@ -39,19 +45,20 @@ function Graph({ data }) {
             fill="none"
             stroke="red"
             strokeWidth={5}
-            d={`M ${(data[0].x * 1000) / xAxisLength + 100},${
-              1100 - (data[0].y * 1000) / yAxisLength
+            d={`M ${data[0].x * (1000 / xAxisLength) + 100},${
+              1100 - data[0].y * (1000 / yAxisLength)
             } ${data
               .map(
                 (pos) =>
-                  `L ${(pos.x * 1000) / xAxisLength + 100},${
-                    1100 - (pos.y * 1000) / yAxisLength
+                  `L ${pos.x * (1000 / xAxisLength) + 100},${
+                    1100 - pos.y * (1000 / yAxisLength)
                   }`
               )
               .join(" ")}`}
           />
         </svg>
       )}
+      {xAxisLength} {yAxisLength}
     </StyledGraph>
   );
 }
