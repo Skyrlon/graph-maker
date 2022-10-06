@@ -3,6 +3,7 @@ import { AppBar, Box, Toolbar, Typography } from "@mui/material";
 import DataInputs from "./DataInputs";
 import styled from "styled-components";
 import { useState } from "react";
+import Graph from "./Graph";
 
 const StyledBox = styled(Box)`
   display: grid;
@@ -34,6 +35,7 @@ function App() {
       </AppBar>
       <StyledBox>
         <DataInputs dataSubmit={handleDataSubmitted} />
+        <Graph data={data} />
       </StyledBox>
     </div>
   );
