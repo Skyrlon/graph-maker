@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const StyledGraph = styled.div`
@@ -15,17 +16,27 @@ function Graph({ data }) {
     return Math.pow(10, Math.ceil(number).toString().length - 1);
   };
 
-  const xAxisLength =
-    data &&
-    findOrderOfMagnitude(data[data.length - 1].x) *
-      Math.ceil(
-        data[data.length - 1].x / findOrderOfMagnitude(data[data.length - 1].x)
-      );
+  const [xAxisAmplitude, setXAxisAmplitude] = useState();
 
-  const yAxisLength =
-    data &&
-    findOrderOfMagnitude(findLargestY(data)) *
-      Math.ceil(findLargestY(data) / findOrderOfMagnitude(findLargestY(data)));
+  const [yAxisAmplitude, setYAxisAmplitude] = useState();
+
+  useEffect(() => {
+    const calculateAmplitude = (largestValue) => {
+      return (
+        findOrderOfMagnitude(largestValue) *
+        Math.ceil(largestValue / findOrderOfMagnitude(largestValue))
+      );
+    };
+
+    const setAxis = () => {
+      setXAxisAmplitude(calculateAmplitude(data[data.length - 1].x));
+      setYAxisAmplitude(calculateAmplitude(findLargestY(data)));
+    };
+
+    if (data) {
+      setAxis();
+    }
+  }, [data]);
 
   return (
     <StyledGraph>
@@ -45,20 +56,20 @@ function Graph({ data }) {
             fill="none"
             stroke="red"
             strokeWidth={5}
-            d={`M ${data[0].x * (1000 / xAxisLength) + 100},${
-              1100 - data[0].y * (1000 / yAxisLength)
+            d={`M ${data[0].x * (1000 / xAxisAmplitude) + 100},${
+              1100 - data[0].y * (1000 / yAxisAmplitude)
             } ${data
               .map(
                 (pos) =>
-                  `L ${pos.x * (1000 / xAxisLength) + 100},${
-                    1100 - pos.y * (1000 / yAxisLength)
+                  `L ${pos.x * (1000 / xAxisAmplitude) + 100},${
+                    1100 - pos.y * (1000 / yAxisAmplitude)
                   }`
               )
               .join(" ")}`}
           />
         </svg>
       )}
-      {xAxisLength} {yAxisLength}
+      {xAxisAmplitude} {yAxisAmplitude}
     </StyledGraph>
   );
 }
