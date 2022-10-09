@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { sortArrayOfObjects } from "./Helpers";
 
 const StyledGraph = styled.div`
   grid-area: graph;
@@ -7,8 +8,7 @@ const StyledGraph = styled.div`
 
 function Graph({ data }) {
   const findLargestY = (array) => {
-    const sortedArray = [...array];
-    sortedArray.sort((a, b) => a.y - b.y);
+    const sortedArray = sortArrayOfObjects(array, "y");
     return sortedArray[sortedArray.length - 1].y;
   };
 

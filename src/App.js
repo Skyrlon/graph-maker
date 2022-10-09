@@ -4,6 +4,7 @@ import DataInputs from "./DataInputs";
 import styled from "styled-components";
 import { useState } from "react";
 import Graph from "./Graph";
+import { sortArrayOfObjects } from "./Helpers";
 
 const StyledBox = styled(Box)`
   display: grid;
@@ -19,9 +20,7 @@ function App() {
   const [data, setData] = useState();
 
   const handleDataSubmitted = (dataSubmitted) => {
-    const sortedData = dataSubmitted;
-    sortedData.sort((a, b) => a.x - b.x);
-    setData(sortedData);
+    setData(sortArrayOfObjects(dataSubmitted, "x"));
   };
 
   return (
