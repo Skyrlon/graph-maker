@@ -7,11 +7,6 @@ const StyledGraph = styled.div`
 `;
 
 function Graph({ data }) {
-  const findLargestY = (array) => {
-    const sortedArray = sortArrayOfObjects(array, "y");
-    return sortedArray[sortedArray.length - 1].y;
-  };
-
   const findOrderOfMagnitude = (number) => {
     return Math.pow(10, Math.ceil(number).toString().length - 1);
   };
@@ -29,8 +24,11 @@ function Graph({ data }) {
     };
 
     const setAxis = () => {
+      const sortedDataByY = sortArrayOfObjects(data, "y");
       setXAxisAmplitude(calculateAmplitude(data[data.length - 1].x));
-      setYAxisAmplitude(calculateAmplitude(findLargestY(data)));
+      setYAxisAmplitude(
+        calculateAmplitude(sortedDataByY[sortedDataByY.length - 1].y)
+      );
     };
 
     if (data) {
