@@ -21,6 +21,9 @@ function DataInputs({ dataSubmit }) {
     { position: 1, firstInputValue: "", secondInputValue: "" },
   ]);
 
+  const [inputsWithSameValue, setInputsWithSameValue] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleFirstInputChange = (e, position) => {
     setInputs(
       inputs.map((input) => {
@@ -63,7 +66,26 @@ function DataInputs({ dataSubmit }) {
     const dataToSubmit = inputs.map((input) => {
       return { x: input.firstInputValue, y: input.secondInputValue };
     });
-    dataSubmit(dataToSubmit);
+    const sameValues = [];
+
+    inputs.forEach((a) => {
+      if (
+        inputs.find(
+          (b) =>
+            a.firstInputValue === b.firstInputValue && a.position !== b.position
+        )
+      ) {
+        sameValues.push(a.position);
+      }
+    });
+    if (sameValues.length === 0) {
+      setInputsWithSameValue(sameValues);
+      dataSubmit(dataToSubmit);
+      setErrorMessage("");
+    } else {
+      setErrorMessage("Put same value as another input");
+      setInputsWithSameValue(sameValues);
+    }
   };
 
   return (
@@ -92,6 +114,8 @@ function DataInputs({ dataSubmit }) {
             type="number"
             value={input.firstInputValue}
             onChange={(e) => handleFirstInputChange(e, input.position)}
+            error={!!inputsWithSameValue.find((x) => x === input.position)}
+            helperText={errorMessage}
           />
           <TextField
             type="number"
