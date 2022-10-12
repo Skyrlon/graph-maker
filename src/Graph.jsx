@@ -19,7 +19,8 @@ function Graph({ data }) {
     const calculateAmplitude = (largestValue) => {
       return (
         findOrderOfMagnitude(largestValue) *
-        Math.ceil(largestValue / findOrderOfMagnitude(largestValue))
+        (Math.ceil((largestValue * 10) / findOrderOfMagnitude(largestValue)) /
+          10)
       );
     };
 
