@@ -13,9 +13,7 @@ function Graph({ data }) {
 
   const imageLength = 2 * axisMargin + axisLength;
 
-  const [xAxisAmplitude, setXAxisAmplitude] = useState();
-
-  const [yAxisAmplitude, setYAxisAmplitude] = useState();
+  const [axisAmplitudes, setAxisAmplitudes] = useState({});
 
   const findOrderOfMagnitude = (number) => {
     return Math.pow(10, Math.ceil(number).toString().length - 1);
@@ -39,13 +37,13 @@ function Graph({ data }) {
 
     const setAxis = () => {
       const sortedDataByY = sortArrayOfObjects(data, "y");
-      setXAxisAmplitude(calculateAmplitude(data[0].x, data[data.length - 1].x));
-      setYAxisAmplitude(
-        calculateAmplitude(
+      setAxisAmplitudes({
+        x: calculateAmplitude(data[0].x, data[data.length - 1].x),
+        y: calculateAmplitude(
           sortedDataByY[0].y,
           sortedDataByY[sortedDataByY.length - 1].y
-        )
-      );
+        ),
+      });
     };
 
     if (data) {
@@ -75,24 +73,24 @@ function Graph({ data }) {
             fill="none"
             stroke="red"
             strokeWidth={5}
-            d={`M ${data[0].x * (axisLength / xAxisAmplitude) + axisMargin},${
+            d={`M ${data[0].x * (axisLength / axisAmplitudes.x) + axisMargin},${
               axisMargin +
               axisLength -
-              data[0].y * (axisLength / yAxisAmplitude)
+              data[0].y * (axisLength / axisAmplitudes.y)
             } ${data
               .map(
                 (pos) =>
-                  `L ${pos.x * (axisLength / xAxisAmplitude) + axisMargin},${
+                  `L ${pos.x * (axisLength / axisAmplitudes.x) + axisMargin},${
                     axisMargin +
                     axisLength -
-                    pos.y * (axisLength / yAxisAmplitude)
+                    pos.y * (axisLength / axisAmplitudes.y)
                   }`
               )
               .join(" ")}`}
           />
         </svg>
       )}
-      {xAxisAmplitude} {yAxisAmplitude}
+      {axisAmplitudes.x} {axisAmplitudes.y}
     </StyledGraph>
   );
 }
