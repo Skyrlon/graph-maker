@@ -16,19 +16,29 @@ function Graph({ data }) {
   const [yAxisAmplitude, setYAxisAmplitude] = useState();
 
   useEffect(() => {
-    const calculateAmplitude = (largestValue) => {
+    const calculateAmplitude = (lowestValue, largestValue) => {
+      let amplitude;
+      if (largestValue <= 0) {
+        amplitude = Math.abs(lowestValue);
+      } else if (lowestValue >= 0) {
+        amplitude = largestValue;
+      } else if (lowestValue < 0 && largestValue > 0) {
+        amplitude = Math.abs(lowestValue) + largestValue;
+      }
       return (
-        findOrderOfMagnitude(largestValue) *
-        (Math.ceil((largestValue * 10) / findOrderOfMagnitude(largestValue)) /
-          10)
+        findOrderOfMagnitude(amplitude) *
+        (Math.ceil((amplitude * 10) / findOrderOfMagnitude(amplitude)) / 10)
       );
     };
 
     const setAxis = () => {
       const sortedDataByY = sortArrayOfObjects(data, "y");
-      setXAxisAmplitude(calculateAmplitude(data[data.length - 1].x));
+      setXAxisAmplitude(calculateAmplitude(data[0].x, data[data.length - 1].x));
       setYAxisAmplitude(
-        calculateAmplitude(sortedDataByY[sortedDataByY.length - 1].y)
+        calculateAmplitude(
+          sortedDataByY[0].y,
+          sortedDataByY[sortedDataByY.length - 1].y
+        )
       );
     };
 
