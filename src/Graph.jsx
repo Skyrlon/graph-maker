@@ -13,31 +13,45 @@ function Graph({ data }) {
 
   const imageLength = 2 * axisMargin + axisLength;
 
-  const [axisAmplitudes, setAxisAmplitudes] = useState({});
+  const [axis, setAxis] = useState(undefined);
 
   const findOrderOfMagnitude = (number) => {
     return Math.pow(10, Math.ceil(number).toString().length - 1);
   };
 
+  const getPosition = (number, amplitude, start) => {
+    return (
+      axisMargin + ((Number(number)) + Math.abs(start)) * (axisLength / amplitude)
+    );
+  };
+
   useEffect(() => {
     const calculateAmplitude = (lowestValue, largestValue) => {
-      let amplitude;
+      let difference, start;
+
       if (largestValue <= 0) {
-        amplitude = Math.abs(lowestValue);
+        difference = Math.abs(lowestValue);
+        start = lowestValue;
       } else if (lowestValue >= 0) {
-        amplitude = largestValue;
+        difference = largestValue;
+        start = 0;
       } else if (lowestValue < 0 && largestValue > 0) {
-        amplitude = Math.abs(lowestValue) + largestValue;
+        difference = Math.abs(lowestValue) + largestValue;
+        start = lowestValue;
       }
-      return (
-        findOrderOfMagnitude(amplitude) *
-        (Math.ceil((amplitude * 10) / findOrderOfMagnitude(amplitude)) / 10)
-      );
+
+      return {
+        amplitude:
+          findOrderOfMagnitude(difference) *
+          (Math.ceil((difference * 10) / findOrderOfMagnitude(difference)) /
+            10),
+        start,
+      };
     };
 
-    const setAxis = () => {
+    const setAxisData = () => {
       const sortedDataByY = sortArrayOfObjects(data, "y");
-      setAxisAmplitudes({
+      setAxis({
         x: calculateAmplitude(data[0].x, data[data.length - 1].x),
         y: calculateAmplitude(
           sortedDataByY[0].y,
@@ -47,50 +61,69 @@ function Graph({ data }) {
     };
 
     if (data) {
-      setAxis();
+      setAxisData();
     }
   }, [data]);
 
   return (
     <StyledGraph>
-      {data && (
-        <svg
-          width="50%"
-          viewBox={`0 0 ${imageLength} ${imageLength}`}
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fill="none"
-            stroke="black"
-            strokeWidth={10}
-            d={`M ${axisMargin},${axisMargin} L ${axisMargin},${
-              imageLength - axisMargin / 2
-            } M ${axisMargin / 2},${axisMargin + axisLength} L ${
-              axisMargin + axisLength
-            },${axisMargin + axisLength}`}
-          />
-          <path
-            fill="none"
-            stroke="red"
-            strokeWidth={5}
-            d={`M ${data[0].x * (axisLength / axisAmplitudes.x) + axisMargin},${
-              axisMargin +
-              axisLength -
-              data[0].y * (axisLength / axisAmplitudes.y)
-            } ${data
-              .map(
-                (pos) =>
-                  `L ${pos.x * (axisLength / axisAmplitudes.x) + axisMargin},${
-                    axisMargin +
-                    axisLength -
-                    pos.y * (axisLength / axisAmplitudes.y)
-                  }`
-              )
-              .join(" ")}`}
-          />
-        </svg>
+      {data && axis && (
+        <>
+          <svg
+            width="50%"
+            viewBox={`0 0 ${imageLength} ${imageLength}`}
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill="none"
+              stroke="black"
+              strokeWidth={10}
+              d={`M ${getPosition(
+                0,
+                axis.x.amplitude,
+                axis.x.start
+              )},${axisMargin} L ${getPosition(
+                0,
+                axis.x.amplitude,
+                axis.x.start
+              )},${imageLength - axisMargin / 2} 
+              M ${axisMargin / 2},${getPosition(
+                0,
+                axis.y.amplitude,
+                axis.y.start
+              )} L ${axisMargin + axisLength},${getPosition(
+                0,
+                axis.y.amplitude,
+                axis.y.start
+              )}`}
+            />
+            <path
+              fill="none"
+              stroke="red"
+              strokeWidth={5}
+              d={`M ${getPosition(
+                data[0].x,
+                axis.x.amplitude,
+                axis.x.start
+              )},${getPosition(
+                data[0].y,
+                axis.y.amplitude,
+                axis.y.start
+              )} ${data
+                .map(
+                  (pos) =>
+                    `L ${getPosition(
+                      pos.x,
+                      axis.x.amplitude,
+                      axis.x.start
+                    )},${getPosition(pos.y, axis.y.amplitude, axis.y.start)}`
+                )
+                .join(" ")}`}
+            />
+          </svg>
+          {axis.x.amplitude} {axis.y.amplitude}
+        </>
       )}
-      {axisAmplitudes.x} {axisAmplitudes.y}
     </StyledGraph>
   );
 }
