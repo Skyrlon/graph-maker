@@ -21,7 +21,7 @@ function Graph({ data }) {
 
   const getPosition = (number, amplitude, start) => {
     return (
-      axisMargin + ((Number(number)) + Math.abs(start)) * (axisLength / amplitude)
+      axisMargin + (Number(number) + Math.abs(start)) * (axisLength / amplitude)
     );
   };
 
@@ -78,24 +78,30 @@ function Graph({ data }) {
               fill="none"
               stroke="black"
               strokeWidth={10}
-              d={`M ${getPosition(
-                0,
-                axis.x.amplitude,
-                axis.x.start
-              )},${axisMargin} L ${getPosition(
-                0,
-                axis.x.amplitude,
-                axis.x.start
-              )},${imageLength - axisMargin / 2} 
-              M ${axisMargin / 2},${getPosition(
+              d={`M ${axisMargin / 2},${getPosition(
                 0,
                 axis.y.amplitude,
                 axis.y.start
-              )} L ${axisMargin + axisLength},${getPosition(
+              )} 
+          L ${axisMargin + axisLength},${getPosition(
                 0,
                 axis.y.amplitude,
                 axis.y.start
               )}`}
+            />
+            <path
+              fill="none"
+              stroke="black"
+              strokeWidth={10}
+              d={`M ${getPosition(
+                0,
+                axis.x.amplitude,
+                axis.x.start
+              )},${axisMargin} 
+              L ${getPosition(0, axis.x.amplitude, axis.x.start)},${
+                imageLength - axisMargin / 2
+              } 
+              `}
             />
             <path
               fill="none"
