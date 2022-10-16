@@ -21,7 +21,7 @@ function Graph({ data }) {
 
   const getPosition = (number, amplitude, start) => {
     return (
-      axisMargin + (Number(number) + Math.abs(start)) * (axisLength / amplitude)
+      axisMargin + Math.abs(Number(number) - start) * (axisLength / amplitude)
     );
   };
 
@@ -36,7 +36,7 @@ function Graph({ data }) {
         difference = largestValue;
         start = 0;
       } else if (lowestValue < 0 && largestValue > 0) {
-        difference = Math.abs(lowestValue) + largestValue;
+        difference = Math.abs(Number(lowestValue)) + Number(largestValue);
         start = lowestValue;
       }
 
@@ -81,12 +81,16 @@ function Graph({ data }) {
               d={`M ${axisMargin / 2},${getPosition(
                 0,
                 axis.y.amplitude,
-                axis.y.start
+                sortArrayOfObjects(data, "y")[
+                  sortArrayOfObjects(data, "y").length - 1
+                ].y
               )} 
           L ${axisMargin + axisLength},${getPosition(
                 0,
                 axis.y.amplitude,
-                axis.y.start
+                sortArrayOfObjects(data, "y")[
+                  sortArrayOfObjects(data, "y").length - 1
+                ].y
               )}`}
             />
             <path
@@ -114,7 +118,9 @@ function Graph({ data }) {
               )},${getPosition(
                 data[0].y,
                 axis.y.amplitude,
-                axis.y.start
+                sortArrayOfObjects(data, "y")[
+                  sortArrayOfObjects(data, "y").length - 1
+                ].y
               )} ${data
                 .map(
                   (pos) =>
@@ -122,7 +128,13 @@ function Graph({ data }) {
                       pos.x,
                       axis.x.amplitude,
                       axis.x.start
-                    )},${getPosition(pos.y, axis.y.amplitude, axis.y.start)}`
+                    )},${getPosition(
+                      pos.y,
+                      axis.y.amplitude,
+                      sortArrayOfObjects(data, "y")[
+                        sortArrayOfObjects(data, "y").length - 1
+                      ].y
+                    )}`
                 )
                 .join(" ")}`}
             />
