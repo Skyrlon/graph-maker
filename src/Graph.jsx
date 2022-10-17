@@ -82,18 +82,35 @@ function Graph({ data }) {
             viewBox={`0 0 ${imageLength} ${imageLength}`}
             xmlns="http://www.w3.org/2000/svg"
           >
+            <defs>
+              <marker
+                id="arrow-head"
+                orient="auto-start-reverse"
+                markerWidth={10}
+                markerHeight={10}
+                refX="0.1"
+                refY="2"
+              >
+                <path d="M0,0 V4 L2,2 Z" fill="black" />
+              </marker>
+            </defs>
+
             <path
+              marker-start="url(#arrow-head)"
+              marker-end="url(#arrow-head)"
               fill="none"
               stroke="black"
               strokeWidth={10}
               d={`M ${axisMargin / 2},${getPositionY(0)} 
-                  L ${axisMargin + axisLength},${getPositionY(0)}`}
+                  L ${axisMargin * 1.5 + axisLength},${getPositionY(0)}`}
             />
             <path
+              marker-start="url(#arrow-head)"
+              marker-end="url(#arrow-head)"
               fill="none"
               stroke="black"
               strokeWidth={10}
-              d={`M ${getPositionX(0)},${axisMargin} 
+              d={`M ${getPositionX(0)},${axisMargin / 2} 
                   L ${getPositionX(0)},${imageLength - axisMargin / 2} 
               `}
             />
