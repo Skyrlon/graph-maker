@@ -16,34 +16,53 @@ const StyledDataInputs = styled(Box)`
 `;
 
 function DataInputs({ dataSubmit }) {
-  const [inputs, setInputs] = useState([
-    { position: 0, firstInputValue: "", secondInputValue: "" },
-    { position: 1, firstInputValue: "", secondInputValue: "" },
-  ]);
+  const [inputs, setInputs] = useState({
+    titles: { first: "", second: "" },
+    values: [
+      { position: 0, firstInputValue: "", secondInputValue: "" },
+      { position: 1, firstInputValue: "", secondInputValue: "" },
+    ],
+  });
 
   const [inputsWithSameValue, setInputsWithSameValue] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const handleFirstTitleInputChange = (e) => {
+    setInputs({
+      ...inputs,
+      titles: { ...inputs.titles, first: e.target.value },
+    });
+  };
+
+  const handleSecondTitleInputChange = (e) => {
+    setInputs({
+      ...inputs,
+      titles: { ...inputs.titles, second: e.target.value },
+    });
+  };
+
   const handleFirstInputChange = (e, position) => {
-    setInputs(
-      inputs.map((input) => {
-        if (input.position === position) {
-          return { ...input, firstInputValue: e.target.value };
+    setInputs({
+      ...inputs,
+      values: inputs.values.map((values) => {
+        if (values.position === position) {
+          return { ...values, firstInputValue: e.target.value };
         }
-        return input;
-      })
-    );
+        return values;
+      }),
+    });
   };
 
   const handleSecondInputChange = (e, position) => {
-    setInputs(
-      inputs.map((input) => {
-        if (input.position === position) {
-          return { ...input, secondInputValue: e.target.value };
+    setInputs({
+      ...inputs,
+      values: inputs.values.map((values) => {
+        if (values.position === position) {
+          return { ...values, secondInputValue: e.target.value };
         }
-        return input;
-      })
-    );
+        return values;
+      }),
+    });
   };
 
   const addInput = () => {
@@ -63,14 +82,11 @@ function DataInputs({ dataSubmit }) {
   };
 
   const handleSubmit = () => {
-    const dataToSubmit = inputs.map((input) => {
-      return { x: input.firstInputValue, y: input.secondInputValue };
-    });
     const sameValues = [];
 
-    inputs.forEach((a) => {
+    inputs.values.forEach((a) => {
       if (
-        inputs.find(
+        inputs.values.find(
           (b) =>
             a.firstInputValue === b.firstInputValue && a.position !== b.position
         )
@@ -80,7 +96,7 @@ function DataInputs({ dataSubmit }) {
     });
     if (sameValues.length === 0) {
       setInputsWithSameValue(sameValues);
-      dataSubmit(dataToSubmit);
+      dataSubmit(inputs);
       setErrorMessage("");
     } else {
       setErrorMessage("Put same value as another input");
@@ -97,13 +113,21 @@ function DataInputs({ dataSubmit }) {
           justifyContent: "space-between",
         }}
       >
-        <TextField label="x-axis" variant="standard"></TextField>
-        <TextField label="y-axis" variant="standard"></TextField>
+        <TextField
+          label="x-axis"
+          variant="standard"
+          onChange={handleFirstTitleInputChange}
+        />
+        <TextField
+          label="y-axis"
+          variant="standard"
+          onChange={handleSecondTitleInputChange}
+        />
       </Box>
 
-      {inputs.map((input) => (
+      {inputs.values.map((values) => (
         <Box
-          key={input.position}
+          key={values.position}
           sx={{
             display: "flex",
             flexDirection: "row",
@@ -112,18 +136,18 @@ function DataInputs({ dataSubmit }) {
         >
           <TextField
             type="number"
-            value={input.firstInputValue}
-            onChange={(e) => handleFirstInputChange(e, input.position)}
-            error={!!inputsWithSameValue.find((x) => x === input.position)}
+            value={values.firstInputValue}
+            onChange={(e) => handleFirstInputChange(e, values.position)}
+            error={!!inputsWithSameValue.find((x) => x === values.position)}
             helperText={errorMessage}
           />
           <TextField
             type="number"
-            value={input.secondInputValue}
-            onChange={(e) => handleSecondInputChange(e, input.position)}
+            value={values.secondInputValue}
+            onChange={(e) => handleSecondInputChange(e, values.position)}
           />
-          {!(input.position === 0 || input.position === 1) && (
-            <IconButton onClick={() => deleteInput(input.position)}>
+          {!(values.position === 0 || values.position === 1) && (
+            <IconButton onClick={() => deleteInput(values.position)}>
               <Delete />
             </IconButton>
           )}

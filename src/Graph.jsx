@@ -9,7 +9,7 @@ const StyledGraph = styled.div`
 function Graph({ data }) {
   const axisLength = 1000;
 
-  const axisMargin = axisLength * 0.1;
+  const axisMargin = axisLength * 0.2;
 
   const imageLength = 2 * axisMargin + axisLength;
 
@@ -20,7 +20,7 @@ function Graph({ data }) {
   };
 
   const getPositionX = (number) => {
-    const lowestValue = data[0].x;
+    const lowestValue = data.values[0].firstInputValue;
     const referenceValue = lowestValue < 0 ? lowestValue : 0;
     return (
       axisMargin +
@@ -30,7 +30,9 @@ function Graph({ data }) {
 
   const getPositionY = (number) => {
     const largestY = Number(
-      sortArrayOfObjects(data, "y")[sortArrayOfObjects(data, "y").length - 1].y
+      sortArrayOfObjects(data.values, "secondInputValue")[
+        sortArrayOfObjects(data.values, "secondInputValue").length - 1
+      ].secondInputValue
     );
     const referenceValue = largestY > 0 ? largestY : 0;
     return (
@@ -58,12 +60,15 @@ function Graph({ data }) {
     };
 
     const setAxisData = () => {
-      const sortedDataByY = sortArrayOfObjects(data, "y");
+      const sortedDataByY = sortArrayOfObjects(data.values, "secondInputValue");
       setAxis({
-        x: calculateAmplitude(data[0].x, data[data.length - 1].x),
+        x: calculateAmplitude(
+          data.values[0].firstInputValue,
+          data.values[data.values.length - 1].firstInputValue
+        ),
         y: calculateAmplitude(
-          sortedDataByY[0].y,
-          sortedDataByY[sortedDataByY.length - 1].y
+          sortedDataByY[0].secondInputValue,
+          sortedDataByY[sortedDataByY.length - 1].secondInputValue
         ),
       });
     };
@@ -96,8 +101,8 @@ function Graph({ data }) {
             </defs>
 
             <path
-              marker-start="url(#arrow-head)"
-              marker-end="url(#arrow-head)"
+              markerStart="url(#arrow-head)"
+              markerEnd="url(#arrow-head)"
               fill="none"
               stroke="black"
               strokeWidth={10}
@@ -105,8 +110,8 @@ function Graph({ data }) {
                   L ${axisMargin * 1.5 + axisLength},${getPositionY(0)}`}
             />
             <path
-              marker-start="url(#arrow-head)"
-              marker-end="url(#arrow-head)"
+              markerStart="url(#arrow-head)"
+              markerEnd="url(#arrow-head)"
               fill="none"
               stroke="black"
               strokeWidth={10}
@@ -118,12 +123,17 @@ function Graph({ data }) {
               fill="none"
               stroke="red"
               strokeWidth={5}
-              d={`M ${getPositionX(data[0].x)},${getPositionY(data[0].y)} 
-                  ${data
-                    .map(
-                      (pos) => `L ${getPositionX(pos.x)},${getPositionY(pos.y)}`
-                    )
-                    .join(" ")}`}
+              d={`M ${getPositionX(
+                data.values[0].firstInputValue
+              )},${getPositionY(data.values[0].secondInputValue)}
+              ${data.values
+                .map(
+                  (pos) =>
+                    `L ${getPositionX(pos.firstInputValue)},${getPositionY(
+                      pos.secondInputValue
+                    )}`
+                )
+                .join(" ")}`}
             />
           </svg>
           {axis.x} {axis.y}

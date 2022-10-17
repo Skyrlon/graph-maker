@@ -20,7 +20,10 @@ function App() {
   const [data, setData] = useState();
 
   const handleDataSubmitted = (dataSubmitted) => {
-    setData(sortArrayOfObjects(dataSubmitted, "x"));
+    setData({
+      ...dataSubmitted,
+      values: sortArrayOfObjects(dataSubmitted.values, "firstInputValue"),
+    });
   };
 
   return (
