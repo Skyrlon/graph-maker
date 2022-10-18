@@ -13,6 +13,10 @@ function Graph({ data }) {
 
   const imageLength = 2 * axisMargin + axisLength;
 
+  const axisStrokeWidth = axisLength / 100;
+
+  const textSize = imageLength / 40;
+
   const [axis, setAxis] = useState(undefined);
 
   const findOrderOfMagnitude = (number) => {
@@ -91,8 +95,8 @@ function Graph({ data }) {
               <marker
                 id="arrow-head"
                 orient="auto-start-reverse"
-                markerWidth={10}
-                markerHeight={10}
+                markerWidth={axisStrokeWidth}
+                markerHeight={axisStrokeWidth}
                 refX="0.1"
                 refY="2"
               >
@@ -105,7 +109,7 @@ function Graph({ data }) {
               markerEnd="url(#arrow-head)"
               fill="none"
               stroke="black"
-              strokeWidth={10}
+              strokeWidth={axisStrokeWidth}
               d={`M ${axisMargin / 2},${getPositionY(0)} 
                   L ${axisMargin * 1.5 + axisLength},${getPositionY(0)}`}
             />
@@ -114,7 +118,7 @@ function Graph({ data }) {
               markerEnd="url(#arrow-head)"
               fill="none"
               stroke="black"
-              strokeWidth={10}
+              strokeWidth={axisStrokeWidth}
               d={`M ${getPositionX(0)},${axisMargin / 2} 
                   L ${getPositionX(0)},${imageLength - axisMargin / 2} 
               `}
@@ -122,7 +126,7 @@ function Graph({ data }) {
             <path
               fill="none"
               stroke="red"
-              strokeWidth={5}
+              strokeWidth={axisStrokeWidth / 2}
               d={`M ${getPositionX(
                 data.values[0].firstInputValue
               )},${getPositionY(data.values[0].secondInputValue)}
@@ -135,6 +139,27 @@ function Graph({ data }) {
                 )
                 .join(" ")}`}
             />
+            {data && axis && (
+              <>
+                <text
+                  x={imageLength - axisMargin / 2}
+                  y={axisMargin / 3 + getPositionY(0)}
+                  style={{ fontSize: textSize }}
+                >
+                  {data.titles.first}
+                </text>
+                <text
+                  text-anchor="middle"
+                  x={getPositionX(0)}
+                  y={axisMargin / 3}
+                  style={{
+                    fontSize: textSize,
+                  }}
+                >
+                  {data.titles.second}
+                </text>
+              </>
+            )}
           </svg>
           {axis.x} {axis.y}
         </>
