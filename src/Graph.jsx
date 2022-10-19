@@ -143,7 +143,7 @@ function Graph({ data }) {
             <>
               {data.values.map((pos) => (
                 <circle
-                  key={pos.x}
+                  key={pos.firstInputValue}
                   cx={getPositionX(pos.firstInputValue)}
                   cy={getPositionY(pos.secondInputValue)}
                   r={axisStrokeWidth}

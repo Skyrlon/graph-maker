@@ -66,15 +66,18 @@ function DataInputs({ dataSubmit }) {
   };
 
   const addInput = () => {
-    const lastInputPosition = inputs[inputs.length - 1].position;
-    setInputs([
+    const lastInputPosition = inputs.values[inputs.values.length - 1].position;
+    setInputs({
       ...inputs,
-      {
-        position: lastInputPosition + 1,
-        firstInputValue: "",
-        secondInputValue: "",
-      },
-    ]);
+      values: [
+        ...inputs.values,
+        {
+          position: lastInputPosition + 1,
+          firstInputValue: "",
+          secondInputValue: "",
+        },
+      ],
+    });
   };
 
   const deleteInput = (inputPosition) => {
