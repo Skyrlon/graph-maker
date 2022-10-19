@@ -139,27 +139,35 @@ function Graph({ data }) {
                 )
                 .join(" ")}`}
             />
-            {data && axis && (
-              <>
-                <text
-                  x={imageLength - axisMargin / 2}
-                  y={axisMargin / 3 + getPositionY(0)}
-                  style={{ fontSize: textSize }}
-                >
-                  {data.titles.first}
-                </text>
-                <text
-                  text-anchor="middle"
-                  x={getPositionX(0)}
-                  y={axisMargin / 3}
-                  style={{
-                    fontSize: textSize,
-                  }}
-                >
-                  {data.titles.second}
-                </text>
-              </>
-            )}
+
+            <>
+              {data.values.map((pos) => (
+                <circle
+                  key={pos.x}
+                  cx={getPositionX(pos.firstInputValue)}
+                  cy={getPositionY(pos.secondInputValue)}
+                  r={axisStrokeWidth}
+                ></circle>
+              ))}
+            </>
+
+            <text
+              x={imageLength - axisMargin / 2}
+              y={axisMargin / 3 + getPositionY(0)}
+              style={{ fontSize: textSize }}
+            >
+              {data.titles.first}
+            </text>
+            <text
+              textAnchor="middle"
+              x={getPositionX(0)}
+              y={axisMargin / 3}
+              style={{
+                fontSize: textSize,
+              }}
+            >
+              {data.titles.second}
+            </text>
           </svg>
           {axis.x} {axis.y}
         </>
