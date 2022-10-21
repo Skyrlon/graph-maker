@@ -26,6 +26,7 @@ function DataInputs({ dataSubmit }) {
 
   const [inputsWithSameValue, setInputsWithSameValue] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [inputsWithWrongValues, setInputsWithWrongValues] = useState([]);
 
   const handleFirstTitleInputChange = (e) => {
     setInputs({
@@ -97,13 +98,32 @@ function DataInputs({ dataSubmit }) {
         sameValues.push(a.position);
       }
     });
-    if (sameValues.length === 0) {
+
+    const valueIsNotNumber = inputs.values.map((values) => {
+      return {
+        ...values,
+        firstInputValue: isNaN(values.firstInputValue),
+        secondInputValue: isNaN(values.secondInputValue),
+      };
+    });
+
+    if (
+      sameValues.length === 0 &&
+      !valueIsNotNumber.some((x) => !!x.firstInputValue || !!x.secondInputValue)
+    ) {
       setInputsWithSameValue(sameValues);
       dataSubmit(inputs);
       setErrorMessage("");
-    } else {
+    }
+    if (sameValues.length > 0) {
       setErrorMessage("Put same value as another input");
       setInputsWithSameValue(sameValues);
+    }
+    if (
+      valueIsNotNumber.some((x) => !!x.firstInputValue || !!x.secondInputValue)
+    ) {
+      setErrorMessage("Value is not a number");
+      setInputsWithWrongValues(valueIsNotNumber);
     }
   };
 
@@ -138,16 +158,33 @@ function DataInputs({ dataSubmit }) {
           }}
         >
           <TextField
-            type="number"
             value={values.firstInputValue}
             onChange={(e) => handleFirstInputChange(e, values.position)}
-            error={!!inputsWithSameValue.find((x) => x === values.position)}
-            helperText={errorMessage}
+            error={
+              !!inputsWithSameValue.find((x) => x === values.position) ||
+              inputsWithWrongValues.find(
+                (x) => x.position === values.position && !!x.firstInputValue
+              )
+            }
+            helperText={
+              (!!inputsWithSameValue.find((x) => x === values.position) ||
+                inputsWithWrongValues.find(
+                  (x) => x.position === values.position && !!x.firstInputValue
+                )) &&
+              errorMessage
+            }
           />
           <TextField
-            type="number"
             value={values.secondInputValue}
             onChange={(e) => handleSecondInputChange(e, values.position)}
+            error={inputsWithWrongValues.find(
+              (x) => x === values.position && !!x.secondInputValue
+            )}
+            helperText={
+              inputsWithWrongValues.find(
+                (x) => x === values.position && !!x.secondInputValue
+              ) && errorMessage
+            }
           />
           {!(values.position === 0 || values.position === 1) && (
             <IconButton onClick={() => deleteInput(values.position)}>
