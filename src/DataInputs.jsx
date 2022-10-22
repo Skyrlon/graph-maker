@@ -16,6 +16,10 @@ const StyledDataInputs = styled(Box)`
 `;
 
 function DataInputs({ dataSubmit }) {
+  const sameValueErrorMessage = "Input have same value as another";
+
+  const notNumberValueErrorMessage = "Value is not a number";
+
   const [inputs, setInputs] = useState({
     titles: { first: "", second: "" },
     values: [
@@ -25,7 +29,6 @@ function DataInputs({ dataSubmit }) {
   });
 
   const [inputsWithSameValue, setInputsWithSameValue] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
   const [inputsWithWrongValues, setInputsWithWrongValues] = useState([]);
 
   const handleFirstTitleInputChange = (e) => {
@@ -87,6 +90,7 @@ function DataInputs({ dataSubmit }) {
 
   const handleSubmit = () => {
     const sameValues = [];
+    const errors = [];
 
     inputs.values.forEach((a) => {
       if (
@@ -113,16 +117,15 @@ function DataInputs({ dataSubmit }) {
     ) {
       setInputsWithSameValue(sameValues);
       dataSubmit(inputs);
-      setErrorMessage("");
     }
     if (sameValues.length > 0) {
-      setErrorMessage("Put same value as another input");
+      errors.push("Put same value as another input");
       setInputsWithSameValue(sameValues);
     }
     if (
       valueIsNotNumber.some((x) => !!x.firstInputValue || !!x.secondInputValue)
     ) {
-      setErrorMessage("Value is not a number");
+      errors.push("Value is not a number");
       setInputsWithWrongValues(valueIsNotNumber);
     }
   };
@@ -161,29 +164,41 @@ function DataInputs({ dataSubmit }) {
             value={values.firstInputValue}
             onChange={(e) => handleFirstInputChange(e, values.position)}
             error={
-              !!inputsWithSameValue.find((x) => x === values.position) ||
-              inputsWithWrongValues.find(
+              !!inputsWithSameValue.includes(values.position) ||
+              !!inputsWithWrongValues.find(
                 (x) => x.position === values.position && !!x.firstInputValue
               )
             }
             helperText={
-              (!!inputsWithSameValue.find((x) => x === values.position) ||
-                inputsWithWrongValues.find(
-                  (x) => x.position === values.position && !!x.firstInputValue
-                )) &&
-              errorMessage
+              <>
+                <>
+                  {!!inputsWithSameValue.includes(values.position)
+                    ? sameValueErrorMessage
+                    : ""}
+                </>
+                <br />
+                <>
+                  {!!inputsWithWrongValues.find(
+                    (x) => x.position === values.position && !!x.firstInputValue
+                  )
+                    ? notNumberValueErrorMessage
+                    : ""}
+                </>
+              </>
             }
           />
           <TextField
             value={values.secondInputValue}
             onChange={(e) => handleSecondInputChange(e, values.position)}
-            error={inputsWithWrongValues.find(
-              (x) => x === values.position && !!x.secondInputValue
-            )}
+            error={
+              !!inputsWithWrongValues.find(
+                (x) => x.position === values.position && !!x.secondInputValue
+              )
+            }
             helperText={
-              inputsWithWrongValues.find(
-                (x) => x === values.position && !!x.secondInputValue
-              ) && errorMessage
+              !!inputsWithWrongValues.find(
+                (x) => x.position === values.position && !!x.secondInputValue
+              ) && notNumberValueErrorMessage
             }
           />
           {!(values.position === 0 || values.position === 1) && (
