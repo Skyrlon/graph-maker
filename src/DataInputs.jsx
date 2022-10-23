@@ -161,6 +161,7 @@ function DataInputs({ dataSubmit }) {
           }}
         >
           <TextField
+            required
             value={values.firstInputValue}
             onChange={(e) => handleFirstInputChange(e, values.position)}
             error={
@@ -188,6 +189,7 @@ function DataInputs({ dataSubmit }) {
             }
           />
           <TextField
+            required
             value={values.secondInputValue}
             onChange={(e) => handleSecondInputChange(e, values.position)}
             error={
@@ -211,7 +213,16 @@ function DataInputs({ dataSubmit }) {
       <IconButton onClick={addInput} sx={{ width: "2rem", height: "2rem" }}>
         <Add />
       </IconButton>
-      <Button onClick={handleSubmit}>Submit</Button>
+      <Button
+        disabled={inputs.values.some(
+          (x) =>
+            x.firstInputValue.trim().length === 0 ||
+            x.secondInputValue.trim().length === 0
+        )}
+        onClick={handleSubmit}
+      >
+        Submit
+      </Button>
     </StyledDataInputs>
   );
 }
