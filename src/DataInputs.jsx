@@ -21,7 +21,8 @@ function DataInputs({ dataSubmit }) {
   const notNumberValueErrorMessage = "Value is not a number";
 
   const [inputs, setInputs] = useState({
-    titles: { first: "", second: "" },
+    title: "",
+    axis: { first: "", second: "" },
     values: [
       { position: 0, firstInputValue: "", secondInputValue: "" },
       { position: 1, firstInputValue: "", secondInputValue: "" },
@@ -31,17 +32,24 @@ function DataInputs({ dataSubmit }) {
   const [inputsWithSameValue, setInputsWithSameValue] = useState([]);
   const [inputsWithWrongValues, setInputsWithWrongValues] = useState([]);
 
-  const handleFirstTitleInputChange = (e) => {
+  const handleTitleInputChange = (e) => {
     setInputs({
       ...inputs,
-      titles: { ...inputs.titles, first: e.target.value },
+      title: e.target.value,
     });
   };
 
-  const handleSecondTitleInputChange = (e) => {
+  const handleFirstAxisInputChange = (e) => {
     setInputs({
       ...inputs,
-      titles: { ...inputs.titles, second: e.target.value },
+      axis: { ...inputs.axis, first: e.target.value },
+    });
+  };
+
+  const handleSecondAxisInputChange = (e) => {
+    setInputs({
+      ...inputs,
+      axis: { ...inputs.axis, second: e.target.value },
     });
   };
 
@@ -132,6 +140,11 @@ function DataInputs({ dataSubmit }) {
 
   return (
     <StyledDataInputs>
+      <TextField
+        label="Title"
+        variant="standard"
+        onChange={handleTitleInputChange}
+      />
       <Box
         sx={{
           display: "flex",
@@ -142,12 +155,12 @@ function DataInputs({ dataSubmit }) {
         <TextField
           label="x-axis"
           variant="standard"
-          onChange={handleFirstTitleInputChange}
+          onChange={handleFirstAxisInputChange}
         />
         <TextField
           label="y-axis"
           variant="standard"
-          onChange={handleSecondTitleInputChange}
+          onChange={handleSecondAxisInputChange}
         />
       </Box>
 

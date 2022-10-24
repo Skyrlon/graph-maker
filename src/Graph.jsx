@@ -156,7 +156,7 @@ function Graph({ data }) {
               y={axisMargin / 3 + getPositionY(0)}
               style={{ fontSize: textSize }}
             >
-              {data.titles.first}
+              {data.axis.first}
             </text>
             <text
               textAnchor="middle"
@@ -166,7 +166,17 @@ function Graph({ data }) {
                 fontSize: textSize,
               }}
             >
-              {data.titles.second}
+              {data.axis.second}
+            </text>
+            <text
+              textAnchor="middle"
+              x={imageLength / 2}
+              y={imageLength - axisMargin / 4}
+              style={{
+                fontSize: textSize,
+              }}
+            >
+              {data.title}
             </text>
           </svg>
           {axis.x} {axis.y}
