@@ -20,122 +20,168 @@ function DataInputs({ dataSubmit }) {
 
   const notNumberValueErrorMessage = "Value is not a number";
 
-  const [inputs, setInputs] = useState({
-    title: "",
-    axis: { first: "", second: "" },
-    values: [
-      { position: 0, firstInputValue: "", secondInputValue: "" },
-      { position: 1, firstInputValue: "", secondInputValue: "" },
-    ],
-  });
+  const [titleInput, setTitleInput] = useState("");
+
+  const [axisInputs, setAxisInputs] = useState({ first: "", second: "" });
+
+  const [setsInputs, setSetsInputs] = useState([
+    {
+      id: 0,
+      dots: [
+        { id: 0, first: "", second: "" },
+        { id: 1, first: "", second: "" },
+      ],
+    },
+  ]);
 
   const [inputsWithSameValue, setInputsWithSameValue] = useState([]);
   const [inputsWithWrongValues, setInputsWithWrongValues] = useState([]);
 
   const handleTitleInputChange = (e) => {
-    setInputs({
-      ...inputs,
-      title: e.target.value,
-    });
+    setTitleInput(e.target.value);
   };
 
   const handleFirstAxisInputChange = (e) => {
-    setInputs({
-      ...inputs,
-      axis: { ...inputs.axis, first: e.target.value },
+    setAxisInputs({
+      ...axisInputs,
+      first: e.target.value,
     });
   };
 
   const handleSecondAxisInputChange = (e) => {
-    setInputs({
-      ...inputs,
-      axis: { ...inputs.axis, second: e.target.value },
+    setAxisInputs({
+      ...axisInputs,
+      second: e.target.value,
     });
   };
 
-  const handleFirstInputChange = (e, position) => {
-    setInputs({
-      ...inputs,
-      values: inputs.values.map((values) => {
-        if (values.position === position) {
-          return { ...values, firstInputValue: e.target.value };
+  const handleFirstInputChange = (e, setID, inputsID) => {
+    setSetsInputs(
+      setsInputs.map((set) => {
+        if (set.id === setID) {
+          return {
+            ...set,
+            dots: set.dots.map((dot) => {
+              if (dot.id === inputsID) {
+                return { ...dot, first: e.target.value };
+              } else {
+                return dot;
+              }
+            }),
+          };
+        } else {
+          return set;
         }
-        return values;
-      }),
-    });
+      })
+    );
   };
 
-  const handleSecondInputChange = (e, position) => {
-    setInputs({
-      ...inputs,
-      values: inputs.values.map((values) => {
-        if (values.position === position) {
-          return { ...values, secondInputValue: e.target.value };
+  const handleSecondInputChange = (e, setID, inputsID) => {
+    setSetsInputs(
+      setsInputs.map((set) => {
+        if (set.id === setID) {
+          return {
+            ...set,
+            dots: set.dots.map((dot) => {
+              if (dot.id === inputsID) {
+                return { ...dot, second: e.target.value };
+              } else {
+                return dot;
+              }
+            }),
+          };
+        } else {
+          return set;
         }
-        return values;
-      }),
-    });
+      })
+    );
   };
 
-  const addInput = () => {
-    const lastInputPosition = inputs.values[inputs.values.length - 1].position;
-    setInputs({
-      ...inputs,
-      values: [
-        ...inputs.values,
-        {
-          position: lastInputPosition + 1,
-          firstInputValue: "",
-          secondInputValue: "",
-        },
-      ],
-    });
+  const addInput = (setID) => {
+    const lastInputsID = setsInputs
+      .find((set) => set.id === setID)
+      .dots.find((dot, index, array) => index === array.length - 1).id;
+    setSetsInputs(
+      setsInputs.map((set) => {
+        if (set.id === setID) {
+          return {
+            ...set,
+            dots: [
+              ...set.dots,
+              { id: lastInputsID + 1, first: "", second: "" },
+            ],
+          };
+        } else {
+          return set;
+        }
+      })
+    );
   };
 
-  const deleteInput = (inputPosition) => {
-    setInputs(inputs.filter((input) => input.position !== inputPosition));
+  const deleteInput = (setID, inputsID) => {
+    setSetsInputs(
+      setsInputs.map((set) => {
+        if (set.id === setID) {
+          return {
+            ...set,
+            dots: [...set.dots.filter((dot) => dot.id !== inputsID)],
+          };
+        } else {
+          return set;
+        }
+      })
+    );
   };
 
   const handleSubmit = () => {
-    const sameValues = [];
+    let sameValues = [];
     const errors = [];
 
-    inputs.values.forEach((a) => {
-      if (
-        inputs.values.find(
-          (b) =>
-            a.firstInputValue === b.firstInputValue && a.position !== b.position
-        )
-      ) {
-        sameValues.push(a.position);
-      }
+    sameValues = setsInputs.map((set) => {
+      return {
+        ...set,
+        dots: set.dots.map((dot, index, array) => {
+          return {
+            ...dot,
+            first: !!array.find((x) => x.first === dot.first && x.id !== index),
+          };
+        }),
+      };
     });
 
-    const valueIsNotNumber = inputs.values.map((values) => {
+    const valueIsNotNumber = setsInputs.map((set) => {
       return {
-        ...values,
-        firstInputValue: isNaN(values.firstInputValue),
-        secondInputValue: isNaN(values.secondInputValue),
+        ...set,
+        dots: set.dots.map((dot) => {
+          return {
+            ...dot,
+            first: isNaN(dot.first),
+            second: isNaN(dot.second),
+          };
+        }),
       };
     });
 
     if (
-      sameValues.length === 0 &&
-      !valueIsNotNumber.some((x) => !!x.firstInputValue || !!x.secondInputValue)
+      !sameValues.some((set) => set.dots.some((dot) => !!dot.first)) &&
+      !valueIsNotNumber.some((set) =>
+        set.dots.some((dot) => !!dot.first || !!dot.second)
+      )
     ) {
-      setInputsWithSameValue(sameValues);
-      dataSubmit(inputs);
+      dataSubmit({ title: titleInput, axis: axisInputs, sets: setsInputs });
     }
-    if (sameValues.length > 0) {
-      errors.push("Put same value as another input");
-      setInputsWithSameValue(sameValues);
+    if (!sameValues.some((set) => set.dots.some((dot) => !!dot.first))) {
+      errors.push("Got same value as another input");
     }
     if (
-      valueIsNotNumber.some((x) => !!x.firstInputValue || !!x.secondInputValue)
+      valueIsNotNumber.some((set) =>
+        set.dots.some((dot) => !!dot.first || !!dot.second)
+      )
     ) {
       errors.push("Value is not a number");
-      setInputsWithWrongValues(valueIsNotNumber);
     }
+    setInputsWithSameValue(sameValues);
+    setInputsWithWrongValues(valueIsNotNumber);
   };
 
   return (
@@ -144,6 +190,7 @@ function DataInputs({ dataSubmit }) {
         label="Title"
         variant="standard"
         onChange={handleTitleInputChange}
+        value={titleInput}
       />
       <Box
         sx={{
@@ -156,81 +203,104 @@ function DataInputs({ dataSubmit }) {
           label="x-axis"
           variant="standard"
           onChange={handleFirstAxisInputChange}
+          value={axisInputs.first}
         />
         <TextField
           label="y-axis"
           variant="standard"
           onChange={handleSecondAxisInputChange}
+          value={axisInputs.second}
         />
       </Box>
 
-      {inputs.values.map((values) => (
-        <Box
-          key={values.position}
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <TextField
-            required
-            value={values.firstInputValue}
-            onChange={(e) => handleFirstInputChange(e, values.position)}
-            error={
-              !!inputsWithSameValue.includes(values.position) ||
-              !!inputsWithWrongValues.find(
-                (x) => x.position === values.position && !!x.firstInputValue
-              )
-            }
-            helperText={
-              <>
-                <>
-                  {!!inputsWithSameValue.includes(values.position)
-                    ? sameValueErrorMessage
-                    : ""}
-                </>
-                <br />
-                <>
-                  {!!inputsWithWrongValues.find(
-                    (x) => x.position === values.position && !!x.firstInputValue
-                  )
-                    ? notNumberValueErrorMessage
-                    : ""}
-                </>
-              </>
-            }
-          />
-          <TextField
-            required
-            value={values.secondInputValue}
-            onChange={(e) => handleSecondInputChange(e, values.position)}
-            error={
-              !!inputsWithWrongValues.find(
-                (x) => x.position === values.position && !!x.secondInputValue
-              )
-            }
-            helperText={
-              !!inputsWithWrongValues.find(
-                (x) => x.position === values.position && !!x.secondInputValue
-              ) && notNumberValueErrorMessage
-            }
-          />
-          {!(values.position === 0 || values.position === 1) && (
-            <IconButton onClick={() => deleteInput(values.position)}>
-              <Delete />
-            </IconButton>
-          )}
+      {setsInputs.map((set) => (
+        <Box key={set.id}>
+          {set.dots.map((dot) => (
+            <Box
+              key={dot.id}
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <TextField
+                required
+                value={dot.first}
+                onChange={(e) => handleFirstInputChange(e, set.id, dot.id)}
+                error={
+                  (inputsWithSameValue.length > 0 &&
+                    !!inputsWithSameValue
+                      .find((x) => x.id === set.id)
+                      .dots.find((x) => x.id === dot.id && !!dot.first)) ||
+                  (inputsWithWrongValues.length > 0 &&
+                    !!inputsWithWrongValues
+                      .find((x) => x.id === set.id)
+                      .dots.find((x) => x.id === dot.id && !!dot.first))
+                }
+                helperText={
+                  <>
+                    <>
+                      {inputsWithSameValue.length > 0 &&
+                      !!inputsWithSameValue
+                        .find((x) => x.id === set.id)
+                        .dots.find((x) => x.id === dot.id && !!dot.first)
+                        ? sameValueErrorMessage
+                        : ""}
+                    </>
+                    <br />
+                    <>
+                      {inputsWithWrongValues.length > 0 &&
+                      !!inputsWithWrongValues
+                        .find((x) => x.id === set.id)
+                        .dots.find((x) => x.id === dot.id && !!dot.first)
+                        ? notNumberValueErrorMessage
+                        : ""}
+                    </>
+                  </>
+                }
+              />
+              <TextField
+                required
+                value={dot.second}
+                onChange={(e) => handleSecondInputChange(e, set.id, dot.id)}
+                error={
+                  inputsWithSameValue.length > 0 &&
+                  !!inputsWithSameValue
+                    .find((x) => x.id === set.id)
+                    .dots.find((x) => x.id === dot.id && !!dot.second)
+                }
+                helperText={
+                  inputsWithSameValue.length > 0 &&
+                  !!inputsWithSameValue
+                    .find((x) => x.id === set.id)
+                    .dots.find((x) => x.id === dot.id && !!dot.second) &&
+                  notNumberValueErrorMessage
+                }
+              />
+              {!(dot.id === 0 || dot.id === 1) && (
+                <IconButton onClick={() => deleteInput(set.id, dot.id)}>
+                  <Delete />
+                </IconButton>
+              )}
+            </Box>
+          ))}
+
+          <IconButton
+            onClick={() => addInput(set.id)}
+            sx={{ width: "2rem", height: "2rem" }}
+          >
+            <Add />
+          </IconButton>
         </Box>
       ))}
-      <IconButton onClick={addInput} sx={{ width: "2rem", height: "2rem" }}>
-        <Add />
-      </IconButton>
+
       <Button
-        disabled={inputs.values.some(
-          (x) =>
-            x.firstInputValue.trim().length === 0 ||
-            x.secondInputValue.trim().length === 0
+        disabled={setsInputs.some((set) =>
+          set.dots.some(
+            (dot) =>
+              dot.first.trim().length === 0 || dot.second.trim().length === 0
+          )
         )}
         onClick={handleSubmit}
       >

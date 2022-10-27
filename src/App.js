@@ -22,7 +22,11 @@ function App() {
   const handleDataSubmitted = (dataSubmitted) => {
     setData({
       ...dataSubmitted,
-      values: sortArrayOfObjects(dataSubmitted.values, "firstInputValue"),
+      sets: [
+        dataSubmitted.sets.map((set) => {
+          return { ...set, dots: sortArrayOfObjects(set.dots, "first") };
+        }),
+      ],
     });
   };
 
