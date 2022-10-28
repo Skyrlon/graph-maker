@@ -23,8 +23,30 @@ function Graph({ data }) {
     return Math.pow(10, Math.ceil(number).toString().length - 1);
   };
 
+  const getLowestValues = (key) => {
+    let lowestValueOfEachSet = [];
+    data.sets.forEach((set) => {
+      lowestValueOfEachSet.push(sortArrayOfObjects(set.dots, key)[0][key]);
+    });
+    lowestValueOfEachSet.sort((a, b) => Number(a) - Number(b));
+    return lowestValueOfEachSet;
+  };
+
+  const getLargestValues = (key) => {
+    let largestValueOfEachSet = [];
+    data.sets.forEach((set) =>
+      largestValueOfEachSet.push(
+        sortArrayOfObjects(set.dots, key)[
+          sortArrayOfObjects(set.dots, key).length - 1
+        ][key]
+      )
+    );
+    largestValueOfEachSet.sort((a, b) => Number(b) - Number(a));
+    return largestValueOfEachSet;
+  };
+
   const getPositionX = (number) => {
-    const lowestValue = data.values[0].firstInputValue;
+    const lowestValue = getLowestValues("first")[0];
     const referenceValue = lowestValue < 0 ? lowestValue : 0;
     return (
       axisMargin +
@@ -33,11 +55,7 @@ function Graph({ data }) {
   };
 
   const getPositionY = (number) => {
-    const largestY = Number(
-      sortArrayOfObjects(data.values, "secondInputValue")[
-        sortArrayOfObjects(data.values, "secondInputValue").length - 1
-      ].secondInputValue
-    );
+    const largestY = getLargestValues("second")[0];
     const referenceValue = largestY > 0 ? largestY : 0;
     return (
       axisMargin +
@@ -45,42 +63,45 @@ function Graph({ data }) {
     );
   };
 
-  useEffect(() => {
-    const calculateAmplitude = (lowestValue, largestValue) => {
-      let difference;
+  useEffect(
+    () => {
+      const calculateAmplitude = (lowestValue, largestValue) => {
+        let difference;
 
-      if (largestValue <= 0) {
-        difference = Math.abs(lowestValue);
-      } else if (lowestValue >= 0) {
-        difference = largestValue;
-      } else if (lowestValue < 0 && largestValue > 0) {
-        difference = Math.abs(Number(lowestValue)) + Number(largestValue);
+        if (largestValue <= 0) {
+          difference = Math.abs(lowestValue);
+        } else if (lowestValue >= 0) {
+          difference = largestValue;
+        } else if (lowestValue < 0 && largestValue > 0) {
+          difference = Math.abs(Number(lowestValue)) + Number(largestValue);
+        }
+
+        return (
+          findOrderOfMagnitude(difference) *
+          (Math.ceil((difference * 10) / findOrderOfMagnitude(difference)) / 10)
+        );
+      };
+
+      const setAxisData = () => {
+        setAxis({
+          x: calculateAmplitude(
+            getLowestValues("first"),
+            getLargestValues("first")
+          ),
+          y: calculateAmplitude(
+            getLowestValues("second"),
+            getLargestValues("second")
+          ),
+        });
+      };
+
+      if (data) {
+        setAxisData();
       }
-
-      return (
-        findOrderOfMagnitude(difference) *
-        (Math.ceil((difference * 10) / findOrderOfMagnitude(difference)) / 10)
-      );
-    };
-
-    const setAxisData = () => {
-      const sortedDataByY = sortArrayOfObjects(data.values, "secondInputValue");
-      setAxis({
-        x: calculateAmplitude(
-          data.values[0].firstInputValue,
-          data.values[data.values.length - 1].firstInputValue
-        ),
-        y: calculateAmplitude(
-          sortedDataByY[0].secondInputValue,
-          sortedDataByY[sortedDataByY.length - 1].secondInputValue
-        ),
-      });
-    };
-
-    if (data) {
-      setAxisData();
-    }
-  }, [data]);
+    },
+    // eslint-disable-next-line
+    [data]
+  );
 
   return (
     <StyledGraph>
@@ -123,32 +144,35 @@ function Graph({ data }) {
                   L ${getPositionX(0)},${imageLength - axisMargin / 2} 
               `}
             />
-            <path
-              fill="none"
-              stroke="red"
-              strokeWidth={axisStrokeWidth / 2}
-              d={`M ${getPositionX(
-                data.values[0].firstInputValue
-              )},${getPositionY(data.values[0].secondInputValue)}
-              ${data.values
+            {data.sets.map((set) => (
+              <path
+                key={set.id}
+                fill="none"
+                stroke="red"
+                strokeWidth={axisStrokeWidth / 2}
+                d={`M ${getPositionX(set.dots[0].first)},${getPositionY(
+                  set.dots[0].second
+                )}
+              ${set.dots
                 .map(
-                  (pos) =>
-                    `L ${getPositionX(pos.firstInputValue)},${getPositionY(
-                      pos.secondInputValue
-                    )}`
+                  (dot) =>
+                    `L ${getPositionX(dot.first)},${getPositionY(dot.second)}`
                 )
                 .join(" ")}`}
-            />
+              />
+            ))}
 
             <>
-              {data.values.map((pos) => (
-                <circle
-                  key={pos.firstInputValue}
-                  cx={getPositionX(pos.firstInputValue)}
-                  cy={getPositionY(pos.secondInputValue)}
-                  r={axisStrokeWidth}
-                ></circle>
-              ))}
+              {data.sets.map((set) =>
+                set.dots.map((dot) => (
+                  <circle
+                    key={dot.id}
+                    cx={getPositionX(dot.first)}
+                    cy={getPositionY(dot.second)}
+                    r={axisStrokeWidth}
+                  />
+                ))
+              )}
             </>
 
             <text
