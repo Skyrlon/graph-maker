@@ -1,5 +1,5 @@
 import { Add, Delete } from "@mui/icons-material";
-import { Box, Button, IconButton, TextField } from "@mui/material";
+import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import styled from "styled-components";
 
@@ -27,6 +27,7 @@ function DataInputs({ dataSubmit }) {
   const [setsInputs, setSetsInputs] = useState([
     {
       id: 0,
+      name: "Set 1",
       dots: [
         { id: 0, first: "", second: "" },
         { id: 1, first: "", second: "" },
@@ -133,6 +134,20 @@ function DataInputs({ dataSubmit }) {
     );
   };
 
+  const addSet = () => {
+    setSetsInputs([
+      ...setsInputs,
+      {
+        id: setsInputs[setsInputs.length - 1].id + 1,
+        name: "New set",
+        dots: [
+          { id: 0, first: "", second: "" },
+          { id: 1, first: "", second: "" },
+        ],
+      },
+    ]);
+  };
+
   const handleSubmit = () => {
     let sameValues = [];
     const errors = [];
@@ -215,6 +230,7 @@ function DataInputs({ dataSubmit }) {
 
       {setsInputs.map((set) => (
         <Box key={set.id}>
+          <Typography>{set.name}</Typography>
           {set.dots.map((dot) => (
             <Box
               key={dot.id}
@@ -299,6 +315,8 @@ function DataInputs({ dataSubmit }) {
           </IconButton>
         </Box>
       ))}
+
+      <Button onClick={addSet}>Add new set</Button>
 
       <Button
         disabled={setsInputs.some((set) =>

@@ -85,12 +85,12 @@ function Graph({ data }) {
       const setAxisData = () => {
         setAxis({
           x: calculateAmplitude(
-            getLowestValues("first"),
-            getLargestValues("first")
+            getLowestValues("first")[0],
+            getLargestValues("first")[0]
           ),
           y: calculateAmplitude(
-            getLowestValues("second"),
-            getLargestValues("second")
+            getLowestValues("second")[0],
+            getLargestValues("second")[0]
           ),
         });
       };
