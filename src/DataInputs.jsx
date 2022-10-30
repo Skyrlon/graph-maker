@@ -1,5 +1,15 @@
 import { Add, Delete } from "@mui/icons-material";
-import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  IconButton,
+  TextField,
+  Typography,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useState } from "react";
 import styled from "styled-components";
 
@@ -229,86 +239,90 @@ function DataInputs({ dataSubmit }) {
       </Box>
 
       {setsInputs.map((set) => (
-        <Box key={set.id}>
-          <Typography>{set.name}</Typography>
-          {set.dots.map((dot) => (
-            <Box
-              key={dot.id}
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <TextField
-                required
-                value={dot.first}
-                onChange={(e) => handleFirstInputChange(e, set.id, dot.id)}
-                error={
-                  !!inputsWithSameValue.some(
-                    (x) =>
-                      x.id === set.id &&
-                      x.dots.some((y) => !!y.first && y.id === dot.id)
-                  ) ||
-                  (inputsWithWrongValues.length > 0 &&
-                    !!inputsWithWrongValues.some(
+        <Accordion key={set.id} defaultExpanded>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>{set.name}</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            {set.dots.map((dot) => (
+              <Box
+                key={dot.id}
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <TextField
+                  required
+                  value={dot.first}
+                  onChange={(e) => handleFirstInputChange(e, set.id, dot.id)}
+                  error={
+                    !!inputsWithSameValue.some(
                       (x) =>
                         x.id === set.id &&
                         x.dots.some((y) => !!y.first && y.id === dot.id)
-                    ))
-                }
-                helperText={
-                  <>
-                    <>
-                      {!!inputsWithSameValue.some(
+                    ) ||
+                    (inputsWithWrongValues.length > 0 &&
+                      !!inputsWithWrongValues.some(
                         (x) =>
                           x.id === set.id &&
                           x.dots.some((y) => !!y.first && y.id === dot.id)
-                      )
-                        ? sameValueErrorMessage
-                        : ""}
-                    </>
-                    <br />
+                      ))
+                  }
+                  helperText={
                     <>
-                      {!!inputsWithWrongValues.some(
-                        (x) =>
-                          x.id === set.id &&
-                          x.dots.some((y) => !!y.first && y.id === dot.id)
-                      )
-                        ? notNumberValueErrorMessage
-                        : ""}
+                      <>
+                        {!!inputsWithSameValue.some(
+                          (x) =>
+                            x.id === set.id &&
+                            x.dots.some((y) => !!y.first && y.id === dot.id)
+                        )
+                          ? sameValueErrorMessage
+                          : ""}
+                      </>
+                      <br />
+                      <>
+                        {!!inputsWithWrongValues.some(
+                          (x) =>
+                            x.id === set.id &&
+                            x.dots.some((y) => !!y.first && y.id === dot.id)
+                        )
+                          ? notNumberValueErrorMessage
+                          : ""}
+                      </>
                     </>
-                  </>
-                }
-              />
-              <TextField
-                required
-                value={dot.second}
-                onChange={(e) => handleSecondInputChange(e, set.id, dot.id)}
-                error={
-                  !!inputsWithWrongValues.some(
-                    (x) =>
-                      x.id === set.id &&
-                      x.dots.some((y) => !!y.second && y.id === dot.id)
-                  )
-                }
-                helperText={
-                  !!inputsWithWrongValues.some(
-                    (x) =>
-                      x.id === set.id &&
-                      x.dots.some((y) => !!y.second && y.id === dot.id)
-                  )
-                    ? notNumberValueErrorMessage
-                    : ""
-                }
-              />
-              {!(dot.id === 0 || dot.id === 1) && (
-                <IconButton onClick={() => deleteInput(set.id, dot.id)}>
-                  <Delete />
-                </IconButton>
-              )}
-            </Box>
-          ))}
+                  }
+                />
+                <TextField
+                  required
+                  value={dot.second}
+                  onChange={(e) => handleSecondInputChange(e, set.id, dot.id)}
+                  error={
+                    !!inputsWithWrongValues.some(
+                      (x) =>
+                        x.id === set.id &&
+                        x.dots.some((y) => !!y.second && y.id === dot.id)
+                    )
+                  }
+                  helperText={
+                    !!inputsWithWrongValues.some(
+                      (x) =>
+                        x.id === set.id &&
+                        x.dots.some((y) => !!y.second && y.id === dot.id)
+                    )
+                      ? notNumberValueErrorMessage
+                      : ""
+                  }
+                />
+                {!(dot.id === 0 || dot.id === 1) && (
+                  <IconButton onClick={() => deleteInput(set.id, dot.id)}>
+                    <Delete />
+                  </IconButton>
+                )}
+              </Box>
+            ))}
+          </AccordionDetails>
 
           <IconButton
             onClick={() => addInput(set.id)}
@@ -316,7 +330,7 @@ function DataInputs({ dataSubmit }) {
           >
             <Add />
           </IconButton>
-        </Box>
+        </Accordion>
       ))}
 
       <Button onClick={addSet}>Add new set</Button>
