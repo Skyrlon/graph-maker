@@ -245,35 +245,36 @@ function DataInputs({ dataSubmit }) {
                 value={dot.first}
                 onChange={(e) => handleFirstInputChange(e, set.id, dot.id)}
                 error={
-                  (inputsWithSameValue.length > 0 &&
-                    !!inputsWithSameValue
-                      .find((x) => x.id === set.id)
-                      .dots.find(
-                        (x) => dot.first === true && x.id === dot.id
-                      )) ||
+                  !!inputsWithSameValue.some(
+                    (x) =>
+                      x.id === set.id &&
+                      x.dots.some((y) => !!y.first && y.id === dot.id)
+                  ) ||
                   (inputsWithWrongValues.length > 0 &&
-                    !!inputsWithWrongValues
-                      .find((x) => x.id === set.id)
-                      .dots.find((x) => dot.first === true && x.id === dot.id))
+                    !!inputsWithWrongValues.some(
+                      (x) =>
+                        x.id === set.id &&
+                        x.dots.some((y) => !!y.first && y.id === dot.id)
+                    ))
                 }
                 helperText={
                   <>
                     <>
-                      {inputsWithSameValue.length > 0 &&
-                        (!!inputsWithSameValue
-                          .find((x) => x.id === set.id)
-                          .dots.find(
-                            (x) => dot.first === true && x.id === dot.id
-                          )
-                          ? sameValueErrorMessage
-                          : "")}
+                      {!!inputsWithSameValue.some(
+                        (x) =>
+                          x.id === set.id &&
+                          x.dots.some((y) => !!y.first && y.id === dot.id)
+                      )
+                        ? sameValueErrorMessage
+                        : ""}
                     </>
                     <br />
                     <>
-                      {inputsWithWrongValues.length > 0 &&
-                      !!inputsWithWrongValues
-                        .find((x) => x.id === set.id)
-                        .dots.find((x) => dot.first === true && x.id === dot.id)
+                      {!!inputsWithWrongValues.some(
+                        (x) =>
+                          x.id === set.id &&
+                          x.dots.some((y) => !!y.first && y.id === dot.id)
+                      )
                         ? notNumberValueErrorMessage
                         : ""}
                     </>
@@ -285,16 +286,18 @@ function DataInputs({ dataSubmit }) {
                 value={dot.second}
                 onChange={(e) => handleSecondInputChange(e, set.id, dot.id)}
                 error={
-                  inputsWithWrongValues.length > 0 &&
-                  !!inputsWithWrongValues
-                    .find((x) => x.id === set.id)
-                    .dots.find((x) => dot.second === true && x.id === dot.id)
+                  !!inputsWithWrongValues.some(
+                    (x) =>
+                      x.id === set.id &&
+                      x.dots.some((y) => !!y.second && y.id === dot.id)
+                  )
                 }
                 helperText={
-                  inputsWithWrongValues.length > 0 &&
-                  !!inputsWithWrongValues
-                    .find((x) => x.id === set.id)
-                    .dots.find((x) => dot.second === true && x.id === dot.id)
+                  !!inputsWithWrongValues.some(
+                    (x) =>
+                      x.id === set.id &&
+                      x.dots.some((y) => !!y.second && y.id === dot.id)
+                  )
                     ? notNumberValueErrorMessage
                     : ""
                 }
