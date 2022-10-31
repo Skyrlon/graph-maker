@@ -9,7 +9,7 @@ const StyledGraph = styled.div`
 function Graph({ data }) {
   const axisLength = 1000;
 
-  const axisMargin = axisLength * 0.2;
+  const axisMargin = axisLength * 0.3;
 
   const imageLength = 2 * axisMargin + axisLength;
 
@@ -144,11 +144,11 @@ function Graph({ data }) {
                   L ${getPositionX(0)},${imageLength - axisMargin / 2} 
               `}
             />
-            {data.sets.map((set) => (
+            {data.sets.map((set, index) => (
               <path
                 key={set.id}
                 fill="none"
-                stroke="red"
+                stroke={["black", "red", "fuchsia", "green", "blue"][index]}
                 strokeWidth={axisStrokeWidth / 2}
                 d={`M ${getPositionX(set.dots[0].first)},${getPositionY(
                   set.dots[0].second
@@ -202,6 +202,26 @@ function Graph({ data }) {
             >
               {data.title}
             </text>
+            {data.sets.map((set, index) => (
+              <g key={set.id}>
+                <text
+                  x={imageLength - axisMargin / 2}
+                  y={axisMargin + textSize * index}
+                  style={{
+                    fontSize: textSize,
+                  }}
+                >
+                  {set.name}
+                </text>
+                <rect
+                  fill={["black", "red", "fuchsia", "green", "blue"][index]}
+                  x={imageLength - axisMargin / 2 - textSize}
+                  y={axisMargin + textSize * index - textSize / 2}
+                  width={textSize / 2}
+                  height={textSize / 2}
+                />
+              </g>
+            ))}
           </svg>
           {axis.x} {axis.y}
         </>
