@@ -7,7 +7,6 @@ import {
   Button,
   IconButton,
   TextField,
-  Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useState } from "react";
@@ -44,6 +43,8 @@ function DataInputs({ dataSubmit }) {
       ],
     },
   ]);
+
+  const [expandedAccordions, setExpandedAccordions] = useState([0]);
 
   const [inputsWithSameValue, setInputsWithSameValue] = useState([]);
   const [inputsWithWrongValues, setInputsWithWrongValues] = useState([]);
@@ -156,6 +157,33 @@ function DataInputs({ dataSubmit }) {
         ],
       },
     ]);
+    setExpandedAccordions([
+      ...expandedAccordions,
+      setsInputs[setsInputs.length - 1].id + 1,
+    ]);
+  };
+
+  const handleSetNameChange = (e, setID) => {
+    setSetsInputs(
+      setsInputs.map((set) => {
+        if (set.id === setID) {
+          return {
+            ...set,
+            name: e.target.value,
+          };
+        } else {
+          return set;
+        }
+      })
+    );
+  };
+
+  const toggleAcordion = (setID) => {
+    if (expandedAccordions.includes(setID)) {
+      setExpandedAccordions(expandedAccordions.filter((x) => x !== setID));
+    } else if (!expandedAccordions.includes(setID)) {
+      setExpandedAccordions([...expandedAccordions, setID]);
+    }
   };
 
   const handleSubmit = () => {
@@ -239,9 +267,17 @@ function DataInputs({ dataSubmit }) {
       </Box>
 
       {setsInputs.map((set) => (
-        <Accordion key={set.id} defaultExpanded>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>{set.name}</Typography>
+        <Accordion key={set.id} expanded={expandedAccordions.includes(set.id)}>
+          <AccordionSummary
+            expandIcon={
+              <ExpandMoreIcon onClick={() => toggleAcordion(set.id)} />
+            }
+          >
+            <TextField
+              variant="standard"
+              onChange={(e) => handleSetNameChange(e, set.id)}
+              value={set.name}
+            />
           </AccordionSummary>
           <AccordionDetails>
             {set.dots.map((dot) => (
