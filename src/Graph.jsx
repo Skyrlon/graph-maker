@@ -148,7 +148,7 @@ function Graph({ data }) {
               <path
                 key={set.id}
                 fill="none"
-                stroke={["black", "red", "fuchsia", "green", "blue"][index]}
+                stroke={set.color}
                 strokeWidth={axisStrokeWidth / 2}
                 d={`M ${getPositionX(set.dots[0].first)},${getPositionY(
                   set.dots[0].second
@@ -214,7 +214,7 @@ function Graph({ data }) {
                   {set.name}
                 </text>
                 <rect
-                  fill={["black", "red", "fuchsia", "green", "blue"][index]}
+                  fill={set.color}
                   x={imageLength - axisMargin / 2 - textSize}
                   y={axisMargin + textSize * index - textSize / 2}
                   width={textSize / 2}

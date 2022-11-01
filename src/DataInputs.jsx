@@ -11,6 +11,8 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useState } from "react";
 import styled from "styled-components";
+import { SketchPicker } from "react-color";
+import { ClickAwayListener } from "@mui/base";
 
 const StyledDataInputs = styled(Box)`
   grid-area: data-inputs;
@@ -21,6 +23,20 @@ const StyledDataInputs = styled(Box)`
   & > * {
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
+  }
+  & .color {
+    &-button {
+      background-color: black;
+      &:hover {
+        background-color: black;
+        opacity: 0.75;
+      }
+    }
+    &-picker {
+      position: absolute;
+      background-color: white;
+      z-index: 2;
+    }
   }
 `;
 
@@ -37,6 +53,7 @@ function DataInputs({ dataSubmit }) {
     {
       id: 0,
       name: "Set 1",
+      color: "#000000",
       dots: [
         { id: 0, first: "", second: "" },
         { id: 1, first: "", second: "" },
@@ -48,6 +65,8 @@ function DataInputs({ dataSubmit }) {
 
   const [inputsWithSameValue, setInputsWithSameValue] = useState([]);
   const [inputsWithWrongValues, setInputsWithWrongValues] = useState([]);
+
+  const [showColorPicker, setShowColorPicker] = useState(undefined);
 
   const handleTitleInputChange = (e) => {
     setTitleInput(e.target.value);
@@ -151,6 +170,7 @@ function DataInputs({ dataSubmit }) {
       {
         id: setsInputs[setsInputs.length - 1].id + 1,
         name: "New set",
+        color: "#000000",
         dots: [
           { id: 0, first: "", second: "" },
           { id: 1, first: "", second: "" },
@@ -184,6 +204,29 @@ function DataInputs({ dataSubmit }) {
     } else if (!expandedAccordions.includes(setID)) {
       setExpandedAccordions([...expandedAccordions, setID]);
     }
+  };
+
+  const handleColorButtonClick = (setID) => {
+    if (showColorPicker === setID) {
+      setShowColorPicker(null);
+    } else {
+      setShowColorPicker(setID);
+    }
+  };
+
+  const handleColorPickerChange = (color, setID) => {
+    setSetsInputs(
+      setsInputs.map((set) => {
+        if (set.id === setID) {
+          return {
+            ...set,
+            color: color.hex,
+          };
+        } else {
+          return set;
+        }
+      })
+    );
   };
 
   const handleSubmit = () => {
@@ -278,6 +321,30 @@ function DataInputs({ dataSubmit }) {
               onChange={(e) => handleSetNameChange(e, set.id)}
               value={set.name}
             />
+            <Box sx={{ position: "relative" }}>
+              <IconButton
+                variant="contained"
+                size="medium"
+                sx={{
+                  backgroundColor: set.color,
+                  "&:hover": { backgroundColor: set.color, opacity: 0.75 },
+                }}
+                onClick={() => handleColorButtonClick(set.id)}
+              />
+              {showColorPicker === set.id && (
+                <ClickAwayListener
+                  onClickAway={() => setShowColorPicker(undefined)}
+                >
+                  <SketchPicker
+                    className="color-picker"
+                    color={set.color}
+                    onChange={(color, e) =>
+                      handleColorPickerChange(color, set.id)
+                    }
+                  />
+                </ClickAwayListener>
+              )}
+            </Box>
           </AccordionSummary>
           <AccordionDetails>
             {set.dots.map((dot) => (
