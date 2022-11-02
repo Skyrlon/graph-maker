@@ -183,6 +183,10 @@ function DataInputs({ dataSubmit }) {
     ]);
   };
 
+  const deleteSet = (setID) => {
+    setSetsInputs(setsInputs.filter((x) => x.id !== setID));
+  };
+
   const handleSetNameChange = (e, setID) => {
     setSetsInputs(
       setsInputs.map((set) => {
@@ -344,6 +348,7 @@ function DataInputs({ dataSubmit }) {
                   />
                 </ClickAwayListener>
               )}
+              {set.id !== 0 && <Delete onClick={() => deleteSet(set.id)} />}
             </Box>
           </AccordionSummary>
           <AccordionDetails>
