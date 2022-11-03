@@ -202,26 +202,27 @@ function Graph({ data }) {
             >
               {data.title}
             </text>
-            {data.sets.map((set, index) => (
-              <g key={set.id}>
-                <text
-                  x={imageLength - axisMargin / 2}
-                  y={axisMargin + textSize * index}
-                  style={{
-                    fontSize: textSize,
-                  }}
-                >
-                  {set.name}
-                </text>
-                <rect
-                  fill={set.color}
-                  x={imageLength - axisMargin / 2 - textSize}
-                  y={axisMargin + textSize * index - textSize / 2}
-                  width={textSize / 2}
-                  height={textSize / 2}
-                />
-              </g>
-            ))}
+            {data.sets.length > 1 &&
+              data.sets.map((set, index) => (
+                <g key={set.id}>
+                  <rect
+                    fill={set.color}
+                    x={imageLength - axisMargin / 2 - textSize}
+                    y={axisMargin + textSize * index - textSize / 2}
+                    width={textSize / 2}
+                    height={textSize / 2}
+                  />
+                  <text
+                    x={imageLength - axisMargin / 2}
+                    y={axisMargin + textSize * index}
+                    style={{
+                      fontSize: textSize,
+                    }}
+                  >
+                    {set.name}
+                  </text>
+                </g>
+              ))}
           </svg>
           {axis.x} {axis.y}
         </>
