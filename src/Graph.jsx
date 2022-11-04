@@ -50,7 +50,8 @@ function Graph({ data }) {
     const referenceValue = lowestValue < 0 ? lowestValue : 0;
     return (
       axisMargin +
-      Math.abs(Number(number) - referenceValue) * (axisLength / axis.x)
+      Math.abs(Number(number) - referenceValue) *
+        (axisLength / axis.x.amplitude)
     );
   };
 
@@ -59,27 +60,44 @@ function Graph({ data }) {
     const referenceValue = largestY > 0 ? largestY : 0;
     return (
       axisMargin +
-      Math.abs(Number(number) - referenceValue) * (axisLength / axis.y)
+      Math.abs(Number(number) - referenceValue) *
+        (axisLength / axis.y.amplitude)
     );
   };
 
   useEffect(
     () => {
       const calculateAmplitude = (lowestValue, largestValue) => {
-        let difference;
+        let difference, start;
 
         if (largestValue <= 0) {
           difference = Math.abs(lowestValue);
+          start = Math.ceil(lowestValue);
         } else if (lowestValue >= 0) {
           difference = largestValue;
+          start = 0;
         } else if (lowestValue < 0 && largestValue > 0) {
           difference = Math.abs(Number(lowestValue)) + Number(largestValue);
+          start = Math.ceil(lowestValue);
         }
 
-        return (
-          findOrderOfMagnitude(difference) *
-          (Math.ceil((difference * 10) / findOrderOfMagnitude(difference)) / 10)
+        const values = Array.from(
+          {
+            length:
+              Math.ceil((difference * 10) / findOrderOfMagnitude(difference)) /
+                10 +
+              1,
+          },
+          (v, i) => start + findOrderOfMagnitude(difference) * i
         );
+
+        return {
+          amplitude:
+            findOrderOfMagnitude(difference) *
+            (Math.ceil((difference * 10) / findOrderOfMagnitude(difference)) /
+              10),
+          values,
+        };
       };
 
       const setAxisData = () => {
@@ -144,7 +162,64 @@ function Graph({ data }) {
                   L ${getPositionX(0)},${imageLength - axisMargin / 2} 
               `}
             />
-            {data.sets.map((set, index) => (
+
+            {axis.x.values.map(
+              (v) =>
+                v !== 0 && (
+                  <g
+                    key={v}
+                    transform={`translate(${getPositionX(v)}, ${getPositionY(
+                      0
+                    )})`}
+                  >
+                    <rect
+                      fill="black"
+                      x={-textSize / 8}
+                      y={-textSize / 2}
+                      width={textSize / 4}
+                      height={textSize}
+                    />
+                    <text
+                      x={0}
+                      y={textSize * 2}
+                      fontSize={textSize}
+                      textAnchor="middle"
+                    >
+                      {v}
+                    </text>
+                  </g>
+                )
+            )}
+
+            {axis.y.values.map(
+              (v) =>
+                v !== 0 && (
+                  <g
+                    key={v}
+                    transform={`translate(${getPositionX(0)}, ${getPositionY(
+                      v
+                    )})`}
+                  >
+                    <rect
+                      fill="black"
+                      x={-textSize / 2}
+                      y={-textSize / 8}
+                      width={textSize}
+                      height={textSize / 4}
+                    />
+                    <text
+                      x={-textSize}
+                      y={textSize / 3}
+                      fontSize={textSize}
+                      textAnchor="middle"
+                    >
+                      {v}
+                    </text>
+                  </g>
+                )
+            )}
+
+            {data.sets.map((set) => (
               <path
                 key={set.id}
                 fill="none"
@@ -162,18 +237,16 @@ function Graph({ data }) {
               />
             ))}
 
-            <>
-              {data.sets.map((set) =>
-                set.dots.map((dot) => (
-                  <circle
-                    key={dot.id}
-                    cx={getPositionX(dot.first)}
-                    cy={getPositionY(dot.second)}
-                    r={axisStrokeWidth}
-                  />
-                ))
-              )}
-            </>
+            {data.sets.map((set) =>
+              set.dots.map((dot) => (
+                <circle
+                  key={dot.id}
+                  cx={getPositionX(dot.first)}
+                  cy={getPositionY(dot.second)}
+                  r={axisStrokeWidth}
+                />
+              ))
+            )}
 
             <text
               x={imageLength - axisMargin / 2}
@@ -186,9 +259,7 @@ function Graph({ data }) {
               textAnchor="middle"
               x={getPositionX(0)}
               y={axisMargin / 3}
-              style={{
-                fontSize: textSize,
-              }}
+              fontSize={textSize}
             >
               {data.axis.second}
             </text>
@@ -196,9 +267,7 @@ function Graph({ data }) {
               textAnchor="middle"
               x={imageLength / 2}
               y={imageLength - axisMargin / 4}
-              style={{
-                fontSize: textSize,
-              }}
+              fontSize={textSize}
             >
               {data.title}
             </text>
@@ -215,16 +284,14 @@ function Graph({ data }) {
                   <text
                     x={imageLength - axisMargin / 2}
                     y={axisMargin + textSize * index}
-                    style={{
-                      fontSize: textSize,
-                    }}
+                    fontSize={textSize}
                   >
                     {set.name}
                   </text>
                 </g>
               ))}
           </svg>
-          {axis.x} {axis.y}
+          {axis.x.amplitude} {axis.y.amplitude}
         </>
       )}
     </StyledGraph>
