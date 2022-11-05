@@ -81,15 +81,14 @@ function Graph({ data }) {
           start = Math.ceil(lowestValue);
         }
 
-        const values = Array.from(
-          {
-            length:
-              Math.ceil((difference * 10) / findOrderOfMagnitude(difference)) /
-                10 +
-              1,
-          },
-          (v, i) => start + findOrderOfMagnitude(difference) * i
-        );
+        const values = Array.from({
+          length:
+            Math.ceil((difference * 10) / findOrderOfMagnitude(difference)) /
+              10 +
+            1,
+        }).map((v, i) => {
+          return start + findOrderOfMagnitude(difference) * i;
+        });
 
         return {
           amplitude:

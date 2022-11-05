@@ -380,25 +380,25 @@ function DataInputs({ dataSubmit }) {
                   }
                   helperText={
                     <>
-                      <>
-                        {!!inputsWithSameValue.some(
-                          (x) =>
-                            x.id === set.id &&
-                            x.dots.some((y) => !!y.first && y.id === dot.id)
-                        )
-                          ? sameValueErrorMessage
-                          : ""}
-                      </>
-                      <br />
-                      <>
-                        {!!inputsWithWrongValues.some(
-                          (x) =>
-                            x.id === set.id &&
-                            x.dots.some((y) => !!y.first && y.id === dot.id)
-                        )
-                          ? notNumberValueErrorMessage
-                          : ""}
-                      </>
+                      {!!inputsWithSameValue.some(
+                        (x) =>
+                          x.id === set.id &&
+                          x.dots.some((y) => !!y.first && y.id === dot.id)
+                      ) ? (
+                        <>
+                          {sameValueErrorMessage}
+                          <br />
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {!!inputsWithWrongValues.some(
+                        (x) =>
+                          x.id === set.id &&
+                          x.dots.some((y) => !!y.first && y.id === dot.id)
+                      )
+                        ? notNumberValueErrorMessage
+                        : ""}
                     </>
                   }
                 />
