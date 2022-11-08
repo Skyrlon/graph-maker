@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import Graph from "./Graph";
 import { sortArrayOfObjects } from "./Helpers";
+import DownloadSection from "./DownloadSection";
 
 const StyledBox = styled(Box)`
   display: grid;
@@ -18,6 +19,7 @@ const StyledBox = styled(Box)`
 
 function App() {
   const [data, setData] = useState();
+  const [svgData, setSvgData] = useState();
 
   const handleDataSubmitted = (dataSubmitted) => {
     setData({
@@ -39,7 +41,8 @@ function App() {
       </AppBar>
       <StyledBox>
         <DataInputs dataSubmit={handleDataSubmitted} />
-        <Graph data={data} />
+        <Graph data={data} sendSvgData={(x) => setSvgData(x)} />
+        <DownloadSection svgData={svgData} />
       </StyledBox>
     </div>
   );

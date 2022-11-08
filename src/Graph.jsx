@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 import { sortArrayOfObjects } from "./Helpers";
 
@@ -6,7 +6,7 @@ const StyledGraph = styled.div`
   grid-area: graph;
 `;
 
-function Graph({ data }) {
+function Graph({ data, sendSvgData }) {
   const axisLength = 1000;
 
   const axisMargin = axisLength * 0.3;
@@ -120,6 +120,14 @@ function Graph({ data }) {
     [data]
   );
 
+  const handleSvg = useCallback(
+    (node) => {
+      sendSvgData(node);
+    },
+    // eslint-disable-next-line
+    []
+  );
+
   return (
     <StyledGraph>
       {data && axis && (
@@ -128,6 +136,7 @@ function Graph({ data }) {
             width="50%"
             viewBox={`0 0 ${imageLength} ${imageLength}`}
             xmlns="http://www.w3.org/2000/svg"
+            ref={handleSvg}
           >
             <defs>
               <marker
