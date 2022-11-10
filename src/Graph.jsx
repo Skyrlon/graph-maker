@@ -17,6 +17,10 @@ function Graph({ data, sendSvgData }) {
 
   const textSize = imageLength / 40;
 
+  const graphColor = "black";
+
+  const backgroundColor = "white";
+
   const [axis, setAxis] = useState(undefined);
 
   const findOrderOfMagnitude = (number) => {
@@ -138,6 +142,7 @@ function Graph({ data, sendSvgData }) {
             xmlns="http://www.w3.org/2000/svg"
             ref={handleSvg}
           >
+            <rect width="100%" height="100%" fill={backgroundColor} />
             <defs>
               <marker
                 id="arrow-head"
@@ -147,7 +152,7 @@ function Graph({ data, sendSvgData }) {
                 refX="0.1"
                 refY="2"
               >
-                <path d="M0,0 V4 L2,2 Z" fill="black" />
+                <path d="M0,0 V4 L2,2 Z" fill={graphColor} />
               </marker>
             </defs>
 
@@ -155,7 +160,7 @@ function Graph({ data, sendSvgData }) {
               markerStart="url(#arrow-head)"
               markerEnd="url(#arrow-head)"
               fill="none"
-              stroke="black"
+              stroke={graphColor}
               strokeWidth={axisStrokeWidth}
               d={`M ${axisMargin / 2},${getPositionY(0)} 
                   L ${axisMargin * 1.5 + axisLength},${getPositionY(0)}`}
@@ -164,7 +169,7 @@ function Graph({ data, sendSvgData }) {
               markerStart="url(#arrow-head)"
               markerEnd="url(#arrow-head)"
               fill="none"
-              stroke="black"
+              stroke={graphColor}
               strokeWidth={axisStrokeWidth}
               d={`M ${getPositionX(0)},${axisMargin / 2} 
                   L ${getPositionX(0)},${imageLength - axisMargin / 2} 
@@ -181,7 +186,7 @@ function Graph({ data, sendSvgData }) {
                     )})`}
                   >
                     <rect
-                      fill="black"
+                      fill={graphColor}
                       x={-textSize / 8}
                       y={-textSize / 2}
                       width={textSize / 4}
@@ -192,6 +197,7 @@ function Graph({ data, sendSvgData }) {
                       y={textSize * 2}
                       fontSize={textSize}
                       textAnchor="middle"
+                      color={graphColor}
                     >
                       {v}
                     </text>
@@ -209,7 +215,7 @@ function Graph({ data, sendSvgData }) {
                     )})`}
                   >
                     <rect
-                      fill="black"
+                      fill={graphColor}
                       x={-textSize / 2}
                       y={-textSize / 8}
                       width={textSize}
@@ -252,6 +258,7 @@ function Graph({ data, sendSvgData }) {
                   cx={getPositionX(dot.first)}
                   cy={getPositionY(dot.second)}
                   r={axisStrokeWidth}
+                  fill={graphColor}
                 />
               ))
             )}
@@ -260,6 +267,7 @@ function Graph({ data, sendSvgData }) {
               x={imageLength - axisMargin / 2}
               y={axisMargin / 3 + getPositionY(0)}
               style={{ fontSize: textSize }}
+              color={graphColor}
             >
               {data.axis.first}
             </text>
@@ -268,6 +276,7 @@ function Graph({ data, sendSvgData }) {
               x={getPositionX(0)}
               y={axisMargin / 3}
               fontSize={textSize}
+              color={graphColor}
             >
               {data.axis.second}
             </text>
@@ -276,6 +285,7 @@ function Graph({ data, sendSvgData }) {
               x={imageLength / 2}
               y={imageLength - axisMargin / 4}
               fontSize={textSize}
+              color={graphColor}
             >
               {data.title}
             </text>
@@ -293,6 +303,7 @@ function Graph({ data, sendSvgData }) {
                     x={imageLength - axisMargin / 2}
                     y={axisMargin + textSize * index}
                     fontSize={textSize}
+                    color={graphColor}
                   >
                     {set.name}
                   </text>

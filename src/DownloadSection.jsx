@@ -1,57 +1,58 @@
 import { Button } from "@mui/material";
-import { useRef } from "react";
 import styled from "styled-components";
+import { useRef } from "react";
 
 const StyledDownloadSection = styled.section`
   grid-area: save;
+  border: 1px solid;
+  #canvas {
+    width: 500px;
+    height: 500px;
+  }
 `;
 
 function DownloadSection({ svgData }) {
-  var canvas = useRef();
+  const canvasRef = useRef();
 
-  function triggerDownload(imgURI) {
-    const evt = new MouseEvent("click", {
-      view: window,
-      bubbles: false,
-      cancelable: true,
-    });
-
-    const a = document.createElement("a");
-    a.setAttribute("download", "MY_COOL_IMAGE.png");
-    a.setAttribute("href", imgURI);
-    a.setAttribute("target", "_blank");
-    a.dispatchEvent(evt);
-  }
-
-  function handleDownloadClick() {
-    let ctx = canvas.current.getContext("2d");
-    let data = new XMLSerializer().serializeToString(svgData);
-    let DOMURL = window.URL || window.webkitURL || window;
-
-    let img = new Image();
-    let svgBlob = new Blob([data], {
-      type: "image/svg+xml;charset=utf-8",
-    });
-    let url = DOMURL.createObjectURL(svgBlob);
+  function drawInlineSVG() {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    const svgText = svgData.outerHTML;
+    var svg = new Blob([svgText], { type: "image/svg+xml;charset=utf-8" }),
+      domURL = window.URL || window.webkitURL || window,
+      url = domURL.createObjectURL(svg),
+      img = new Image();
 
     img.onload = function () {
       ctx.drawImage(img, 0, 0);
-      DOMURL.revokeObjectURL(url);
-
-      let imgURI = canvas.current
-        .toDataURL("image/png")
-        .replace("image/png", "image/octet-stream");
-
-      triggerDownload(imgURI);
+      domURL.revokeObjectURL(url);
     };
 
     img.src = url;
+    let jpeg = canvas.toDataURL("image/jpeg");
+    download(jpeg, "image.jpeg", canvas);
+  }
+
+  function download(href, name, canvas) {
+    var link = document.createElement("a");
+    link.download = name;
+    link.style.opacity = "0";
+    canvas.append(link);
+    link.href = href;
+    link.click();
+    link.remove();
   }
 
   return (
     <StyledDownloadSection>
-      <Button onClick={handleDownloadClick}>Download</Button>
-      <canvas ref={canvas}></canvas>
+      <Button onClick={drawInlineSVG}>Download</Button>
+      <canvas
+        id="canvas"
+        ref={canvasRef}
+        style={{ border: "1px solid red" }}
+        width="1600"
+        height="1600"
+      ></canvas>
     </StyledDownloadSection>
   );
 }
