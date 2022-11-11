@@ -10,7 +10,7 @@ import DownloadSection from "./DownloadSection";
 const StyledBox = styled(Box)`
   display: grid;
   grid-template-columns: 75% 25%;
-  grid-template-rows: 3fr 1fr;
+  grid-template-rows: 1fr 1fr;
   gap: 0px 0px;
   grid-template-areas:
     "graph data-inputs"

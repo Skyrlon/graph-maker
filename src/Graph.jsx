@@ -4,6 +4,18 @@ import { sortArrayOfObjects } from "./Helpers";
 
 const StyledGraph = styled.div`
   grid-area: graph;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  .container {
+    width: 50%;
+  }
+  svg {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 function Graph({ data, sendSvgData }) {
@@ -135,10 +147,11 @@ function Graph({ data, sendSvgData }) {
   return (
     <StyledGraph>
       {data && axis && (
-        <>
+        <div className="container">
           <svg
-            width="50%"
             viewBox={`0 0 ${imageLength} ${imageLength}`}
+            width={imageLength}
+            height={imageLength}
             xmlns="http://www.w3.org/2000/svg"
             ref={handleSvg}
           >
@@ -310,8 +323,7 @@ function Graph({ data, sendSvgData }) {
                 </g>
               ))}
           </svg>
-          {axis.x.amplitude} {axis.y.amplitude}
-        </>
+        </div>
       )}
     </StyledGraph>
   );

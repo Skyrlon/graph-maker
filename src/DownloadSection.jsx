@@ -6,6 +6,7 @@ const StyledDownloadSection = styled.section`
   grid-area: save;
   border: 1px solid;
   #canvas {
+    position: absolute;
     width: 500px;
     height: 500px;
   }
@@ -18,7 +19,7 @@ function DownloadSection({ svgData }) {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     const svgText = svgData.outerHTML;
-    var svg = new Blob([svgText], { type: "image/svg+xml;charset=utf-8" }),
+    const svg = new Blob([svgText], { type: "image/svg+xml;charset=utf-8" }),
       domURL = window.URL || window.webkitURL || window,
       url = domURL.createObjectURL(svg),
       img = new Image();
