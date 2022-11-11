@@ -26,11 +26,11 @@ function DownloadSection({ svgData }) {
     img.onload = function () {
       ctx.drawImage(img, 0, 0);
       domURL.revokeObjectURL(url);
+      let jpeg = canvas.toDataURL("image/jpeg");
+      download(jpeg, "image.jpeg", canvas);
     };
 
     img.src = url;
-    let jpeg = canvas.toDataURL("image/jpeg");
-    download(jpeg, "image.jpeg", canvas);
   }
 
   function download(href, name, canvas) {
