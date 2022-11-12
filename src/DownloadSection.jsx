@@ -1,4 +1,4 @@
-import { Button, TextField } from "@mui/material";
+import { Button, MenuItem, Select, TextField } from "@mui/material";
 import styled from "styled-components";
 import { useRef, useState } from "react";
 
@@ -17,6 +17,7 @@ function DownloadSection({ svgData }) {
   const canvasRef = useRef();
 
   const [imgSize, setImgSize] = useState("");
+  const [imgType, setImgType] = useState("png");
 
   function drawInlineSVG() {
     const canvas = canvasRef.current;
@@ -32,8 +33,8 @@ function DownloadSection({ svgData }) {
       canvas.height = imgSize;
       ctx.drawImage(img, 0, 0, 1600, 1600, 0, 0, imgSize, imgSize);
       domURL.revokeObjectURL(url);
-      let jpeg = canvas.toDataURL("image/jpeg");
-      download(jpeg, "image.jpeg", canvas);
+      let dataURL = canvas.toDataURL(`image/${imgType}`);
+      download(dataURL, `image.${imgType}`, canvas);
     };
 
     img.src = url;
@@ -56,6 +57,11 @@ function DownloadSection({ svgData }) {
         value={imgSize}
         onChange={(e) => setImgSize(e.target.value)}
       ></TextField>
+      <Select value={imgType} onChange={(e) => setImgType(e.target.value)}>
+        <MenuItem value={"png"}>PNG</MenuItem>
+        <MenuItem value={"jpeg"}>JPEG</MenuItem>
+        <MenuItem value={"bmp"}>BMP</MenuItem>
+      </Select>
       <Button onClick={drawInlineSVG}>Download</Button>
       <canvas
         id="canvas"
