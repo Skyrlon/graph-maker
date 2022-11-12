@@ -1,19 +1,22 @@
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import styled from "styled-components";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 const StyledDownloadSection = styled.section`
   grid-area: save;
   border: 1px solid;
+  position: relative;
   #canvas {
     position: absolute;
-    width: 500px;
-    height: 500px;
+    width: 1px;
+    height: 1px;
   }
 `;
 
 function DownloadSection({ svgData }) {
   const canvasRef = useRef();
+
+  const [imgSize, setImgSize] = useState("");
 
   function drawInlineSVG() {
     const canvas = canvasRef.current;
@@ -25,7 +28,9 @@ function DownloadSection({ svgData }) {
       img = new Image();
 
     img.onload = function () {
-      ctx.drawImage(img, 0, 0);
+      canvas.width = imgSize;
+      canvas.height = imgSize;
+      ctx.drawImage(img, 0, 0, 1600, 1600, 0, 0, imgSize, imgSize);
       domURL.revokeObjectURL(url);
       let jpeg = canvas.toDataURL("image/jpeg");
       download(jpeg, "image.jpeg", canvas);
@@ -46,13 +51,16 @@ function DownloadSection({ svgData }) {
 
   return (
     <StyledDownloadSection>
+      <TextField
+        label="Image Size"
+        value={imgSize}
+        onChange={(e) => setImgSize(e.target.value)}
+      ></TextField>
       <Button onClick={drawInlineSVG}>Download</Button>
       <canvas
         id="canvas"
         ref={canvasRef}
         style={{ border: "1px solid red" }}
-        width="1600"
-        height="1600"
       ></canvas>
     </StyledDownloadSection>
   );
