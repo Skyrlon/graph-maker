@@ -22,7 +22,7 @@ function DownloadSection({ svgData }) {
   function drawInlineSVG() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    const svgText = svgData.outerHTML;
+    const svgText = svgData.node.outerHTML;
     const svg = new Blob([svgText], { type: "image/svg+xml;charset=utf-8" }),
       domURL = window.URL || window.webkitURL || window,
       url = domURL.createObjectURL(svg),
@@ -31,9 +31,19 @@ function DownloadSection({ svgData }) {
     img.onload = function () {
       canvas.width = imgSize;
       canvas.height = imgSize;
-      ctx.drawImage(img, 0, 0, 1600, 1600, 0, 0, imgSize, imgSize);
+      ctx.drawImage(
+        img,
+        0,
+        0,
+        svgData.width,
+        svgData.height,
+        0,
+        0,
+        imgSize,
+        imgSize
+      );
       domURL.revokeObjectURL(url);
-      let dataURL = canvas.toDataURL(`image/${imgType}`);
+      const dataURL = canvas.toDataURL(`image/${imgType}`);
       download(dataURL, `image.${imgType}`, canvas);
     };
 
@@ -63,11 +73,7 @@ function DownloadSection({ svgData }) {
         <MenuItem value={"bmp"}>BMP</MenuItem>
       </Select>
       <Button onClick={drawInlineSVG}>Download</Button>
-      <canvas
-        id="canvas"
-        ref={canvasRef}
-        style={{ border: "1px solid red" }}
-      ></canvas>
+      <canvas id="canvas" ref={canvasRef}></canvas>
     </StyledDownloadSection>
   );
 }

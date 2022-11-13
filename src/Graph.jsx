@@ -138,7 +138,7 @@ function Graph({ data, sendSvgData }) {
 
   const handleSvg = useCallback(
     (node) => {
-      sendSvgData(node);
+      sendSvgData({ width: imageLength, height: imageLength, node });
     },
     // eslint-disable-next-line
     []
