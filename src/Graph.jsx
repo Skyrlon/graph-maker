@@ -31,8 +31,6 @@ function Graph({ data, sendSvgData }) {
 
   const graphColor = "black";
 
-  const backgroundColor = "white";
-
   const [axis, setAxis] = useState(undefined);
 
   const findOrderOfMagnitude = (number) => {
@@ -155,7 +153,6 @@ function Graph({ data, sendSvgData }) {
             xmlns="http://www.w3.org/2000/svg"
             ref={handleSvg}
           >
-            <rect width="100%" height="100%" fill={backgroundColor} />
             <defs>
               <marker
                 id="arrow-head"

@@ -31,6 +31,10 @@ function DownloadSection({ svgData }) {
     img.onload = function () {
       canvas.width = imgSize;
       canvas.height = imgSize;
+      if (imgType !== "png") {
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, imgSize, imgSize);
+      }
       ctx.drawImage(
         img,
         0,
