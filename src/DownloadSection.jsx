@@ -19,7 +19,8 @@ function DownloadSection({ svgData }) {
   const [imgSize, setImgSize] = useState("");
   const [imgType, setImgType] = useState("png");
 
-  function drawInlineSVG() {
+  const drawInlineSVG = () => {
+    const imgName = svgData.title.trim().length > 0 ? svgData.title : "graph";
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     const svgText = svgData.node.outerHTML;
@@ -48,13 +49,13 @@ function DownloadSection({ svgData }) {
       );
       domURL.revokeObjectURL(url);
       const dataURL = canvas.toDataURL(`image/${imgType}`);
-      download(dataURL, `image.${imgType}`, canvas);
+      download(dataURL, `${imgName}.${imgType}`, canvas);
     };
 
     img.src = url;
-  }
+  };
 
-  function download(href, name, canvas) {
+  const download = (href, name, canvas) => {
     var link = document.createElement("a");
     link.download = name;
     link.style.opacity = "0";
@@ -62,7 +63,7 @@ function DownloadSection({ svgData }) {
     link.href = href;
     link.click();
     link.remove();
-  }
+  };
 
   return (
     <StyledDownloadSection>
