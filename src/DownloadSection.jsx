@@ -1,6 +1,7 @@
-import { Button, MenuItem, Select, TextField } from "@mui/material";
+import { Button, MenuItem, Select, TextField, Typography } from "@mui/material";
 import styled from "styled-components";
 import { useRef, useState } from "react";
+import { useEffect } from "react";
 
 const StyledDownloadSection = styled.section`
   grid-area: save;
@@ -16,8 +17,11 @@ const StyledDownloadSection = styled.section`
 function DownloadSection({ svgData }) {
   const canvasRef = useRef();
 
-  const [imgSize, setImgSize] = useState("");
+  const [imgSize, setImgSize] = useState(400);
   const [imgType, setImgType] = useState("png");
+  const [fileName, setFileName] = useState("");
+  const [imgDataURL, setImgDataUrl] = useState("");
+  const [imgFileSize, setImgFileSize] = useState("");
 
   const drawInlineSVG = () => {
     const imgName = svgData.title.trim().length > 0 ? svgData.title : "graph";
@@ -49,21 +53,34 @@ function DownloadSection({ svgData }) {
       );
       domURL.revokeObjectURL(url);
       const dataURL = canvas.toDataURL(`image/${imgType}`);
-      download(dataURL, `${imgName}.${imgType}`, canvas);
+      setImgDataUrl(dataURL);
+      setFileName(`${imgName}.${imgType}`);
+      const head = "data:image/png;base64,";
+      setImgFileSize(Math.round(((dataURL.length - head.length) * 3) / 4));
     };
 
     img.src = url;
   };
 
-  const download = (href, name, canvas) => {
+  const download = () => {
     var link = document.createElement("a");
-    link.download = name;
+    link.download = fileName;
     link.style.opacity = "0";
-    canvas.append(link);
-    link.href = href;
+    canvasRef.current.append(link);
+    link.href = imgDataURL;
     link.click();
     link.remove();
   };
+
+  useEffect(
+    () => {
+      if (svgData.node) {
+        drawInlineSVG();
+      }
+    },
+    // eslint-disable-next-line
+    [svgData, imgSize, imgType]
+  );
 
   return (
     <StyledDownloadSection>
@@ -77,7 +94,8 @@ function DownloadSection({ svgData }) {
         <MenuItem value={"jpeg"}>JPEG</MenuItem>
         <MenuItem value={"bmp"}>BMP</MenuItem>
       </Select>
-      <Button onClick={drawInlineSVG}>Download</Button>
+      <Button onClick={download}>Download</Button>
+      <Typography>≈{imgFileSize} octet</Typography>
       <canvas id="canvas" ref={canvasRef}></canvas>
     </StyledDownloadSection>
   );
