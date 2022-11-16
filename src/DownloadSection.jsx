@@ -56,7 +56,22 @@ function DownloadSection({ svgData }) {
       setImgDataUrl(dataURL);
       setFileName(`${imgName}.${imgType}`);
       const head = "data:image/png;base64,";
-      setImgFileSize(Math.round(((dataURL.length - head.length) * 3) / 4));
+      const fileSize = Math.round(((dataURL.length - head.length) * 3) / 4);
+
+      if (fileSize < 0) {
+        setImgFileSize("0 o");
+      } else {
+        let power = 0;
+        const symbolArray = ["", "K", "M", "G", "T"];
+        while (fileSize > Math.pow(1024, power)) {
+          power++;
+        }
+        setImgFileSize(
+          `${Math.round((fileSize / Math.pow(1024, power - 1)) * 100) / 100} ${
+            symbolArray[power - 1]
+          }o`
+        );
+      }
     };
 
     img.src = url;
@@ -95,7 +110,7 @@ function DownloadSection({ svgData }) {
         <MenuItem value={"bmp"}>BMP</MenuItem>
       </Select>
       <Button onClick={download}>Download</Button>
-      <Typography>≈{imgFileSize} octet</Typography>
+      <Typography>≈{imgFileSize}</Typography>
       <canvas id="canvas" ref={canvasRef}></canvas>
     </StyledDownloadSection>
   );
