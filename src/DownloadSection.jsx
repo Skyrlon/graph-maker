@@ -2,11 +2,14 @@ import { Button, MenuItem, Select, TextField, Typography } from "@mui/material";
 import styled from "styled-components";
 import { useRef, useState } from "react";
 import { useEffect } from "react";
+import { Box } from "@mui/system";
 
 const StyledDownloadSection = styled.section`
   grid-area: save;
   border: 1px solid;
   position: relative;
+  display: flex;
+  flex-direction: row;
   #canvas {
     position: absolute;
     width: 1px;
@@ -22,6 +25,7 @@ function DownloadSection({ svgData }) {
   const [fileName, setFileName] = useState("");
   const [imgDataURL, setImgDataUrl] = useState("");
   const [imgFileSize, setImgFileSize] = useState("");
+  const [imgQuality, setImgQuality] = useState(100);
 
   const drawInlineSVG = () => {
     const imgName = svgData.title.trim().length > 0 ? svgData.title : "graph";
@@ -52,7 +56,7 @@ function DownloadSection({ svgData }) {
         imgSize
       );
       domURL.revokeObjectURL(url);
-      const dataURL = canvas.toDataURL(`image/${imgType}`);
+      const dataURL = canvas.toDataURL(`image/${imgType}`, imgQuality / 100);
       setImgDataUrl(dataURL);
       setFileName(`${imgName}.${imgType}`);
       const head = "data:image/png;base64,";
@@ -94,7 +98,7 @@ function DownloadSection({ svgData }) {
       }
     },
     // eslint-disable-next-line
-    [svgData, imgSize, imgType]
+    [svgData, imgSize, imgType, imgQuality]
   );
 
   return (
@@ -109,8 +113,16 @@ function DownloadSection({ svgData }) {
         <MenuItem value={"jpeg"}>JPEG</MenuItem>
         <MenuItem value={"bmp"}>BMP</MenuItem>
       </Select>
+      <Box sx={{ display: "flex", flexDirection: "row" }}>
+        <TextField
+          value={imgQuality}
+          onChange={(e) => setImgQuality(e.target.value)}
+        ></TextField>
+        <Typography>%</Typography>
+      </Box>
       <Button onClick={download}>Download</Button>
       <Typography>≈{imgFileSize}</Typography>
+
       <canvas id="canvas" ref={canvasRef}></canvas>
     </StyledDownloadSection>
   );
