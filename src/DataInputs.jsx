@@ -54,7 +54,7 @@ function DataInputs({ dataSubmit }) {
       id: 0,
       name: "Set 1",
       color: "#000000",
-      dots: [
+      inputs: [
         { id: 0, first: "", second: "" },
         { id: 1, first: "", second: "" },
       ],
@@ -92,7 +92,7 @@ function DataInputs({ dataSubmit }) {
         if (set.id === setID) {
           return {
             ...set,
-            dots: set.dots.map((dot) => {
+            inputs: set.inputs.map((dot) => {
               if (dot.id === inputsID) {
                 return { ...dot, first: e.target.value };
               } else {
@@ -113,7 +113,7 @@ function DataInputs({ dataSubmit }) {
         if (set.id === setID) {
           return {
             ...set,
-            dots: set.dots.map((dot) => {
+            inputs: set.inputs.map((dot) => {
               if (dot.id === inputsID) {
                 return { ...dot, second: e.target.value };
               } else {
@@ -131,14 +131,14 @@ function DataInputs({ dataSubmit }) {
   const addInput = (setID) => {
     const lastInputsID = setsInputs
       .find((set) => set.id === setID)
-      .dots.find((dot, index, array) => index === array.length - 1).id;
+      .inputs.find((dot, index, array) => index === array.length - 1).id;
     setSetsInputs(
       setsInputs.map((set) => {
         if (set.id === setID) {
           return {
             ...set,
-            dots: [
-              ...set.dots,
+            inputs: [
+              ...set.inputs,
               { id: lastInputsID + 1, first: "", second: "" },
             ],
           };
@@ -155,7 +155,7 @@ function DataInputs({ dataSubmit }) {
         if (set.id === setID) {
           return {
             ...set,
-            dots: [...set.dots.filter((dot) => dot.id !== inputsID)],
+            inputs: [...set.inputs.filter((dot) => dot.id !== inputsID)],
           };
         } else {
           return set;
@@ -171,7 +171,7 @@ function DataInputs({ dataSubmit }) {
         id: setsInputs[setsInputs.length - 1].id + 1,
         name: "New set",
         color: "#000000",
-        dots: [
+        inputs: [
           { id: 0, first: "", second: "" },
           { id: 1, first: "", second: "" },
         ],
@@ -240,7 +240,7 @@ function DataInputs({ dataSubmit }) {
     sameValues = setsInputs.map((set) => {
       return {
         ...set,
-        dots: set.dots.map((dot, index, array) => {
+        inputs: set.inputs.map((dot, index, array) => {
           return {
             ...dot,
             first: !!array.find((x) => x.first === dot.first && x.id !== index),
@@ -252,7 +252,7 @@ function DataInputs({ dataSubmit }) {
     const valueIsNotNumber = setsInputs.map((set) => {
       return {
         ...set,
-        dots: set.dots.map((dot) => {
+        inputs: set.inputs.map((dot) => {
           return {
             ...dot,
             first: isNaN(dot.first),
@@ -263,19 +263,19 @@ function DataInputs({ dataSubmit }) {
     });
 
     if (
-      !sameValues.some((set) => set.dots.some((dot) => !!dot.first)) &&
+      !sameValues.some((set) => set.inputs.some((dot) => !!dot.first)) &&
       !valueIsNotNumber.some((set) =>
-        set.dots.some((dot) => !!dot.first || !!dot.second)
+        set.inputs.some((dot) => !!dot.first || !!dot.second)
       )
     ) {
       dataSubmit({ title: titleInput, axis: axisInputs, sets: setsInputs });
     }
-    if (!sameValues.some((set) => set.dots.some((dot) => !!dot.first))) {
+    if (!sameValues.some((set) => set.inputs.some((dot) => !!dot.first))) {
       errors.push("Got same value as another input");
     }
     if (
       valueIsNotNumber.some((set) =>
-        set.dots.some((dot) => !!dot.first || !!dot.second)
+        set.inputs.some((dot) => !!dot.first || !!dot.second)
       )
     ) {
       errors.push("Value is not a number");
@@ -352,7 +352,7 @@ function DataInputs({ dataSubmit }) {
             </Box>
           </AccordionSummary>
           <AccordionDetails>
-            {set.dots.map((dot) => (
+            {set.inputs.map((dot) => (
               <Box
                 key={dot.id}
                 sx={{
@@ -369,13 +369,13 @@ function DataInputs({ dataSubmit }) {
                     !!inputsWithSameValue.some(
                       (x) =>
                         x.id === set.id &&
-                        x.dots.some((y) => !!y.first && y.id === dot.id)
+                        x.inputs.some((y) => !!y.first && y.id === dot.id)
                     ) ||
                     (inputsWithWrongValues.length > 0 &&
                       !!inputsWithWrongValues.some(
                         (x) =>
                           x.id === set.id &&
-                          x.dots.some((y) => !!y.first && y.id === dot.id)
+                          x.inputs.some((y) => !!y.first && y.id === dot.id)
                       ))
                   }
                   helperText={
@@ -383,7 +383,7 @@ function DataInputs({ dataSubmit }) {
                       {!!inputsWithSameValue.some(
                         (x) =>
                           x.id === set.id &&
-                          x.dots.some((y) => !!y.first && y.id === dot.id)
+                          x.inputs.some((y) => !!y.first && y.id === dot.id)
                       ) ? (
                         <>
                           {sameValueErrorMessage}
@@ -395,7 +395,7 @@ function DataInputs({ dataSubmit }) {
                       {!!inputsWithWrongValues.some(
                         (x) =>
                           x.id === set.id &&
-                          x.dots.some((y) => !!y.first && y.id === dot.id)
+                          x.inputs.some((y) => !!y.first && y.id === dot.id)
                       )
                         ? notNumberValueErrorMessage
                         : ""}
@@ -410,14 +410,14 @@ function DataInputs({ dataSubmit }) {
                     !!inputsWithWrongValues.some(
                       (x) =>
                         x.id === set.id &&
-                        x.dots.some((y) => !!y.second && y.id === dot.id)
+                        x.inputs.some((y) => !!y.second && y.id === dot.id)
                     )
                   }
                   helperText={
                     !!inputsWithWrongValues.some(
                       (x) =>
                         x.id === set.id &&
-                        x.dots.some((y) => !!y.second && y.id === dot.id)
+                        x.inputs.some((y) => !!y.second && y.id === dot.id)
                     )
                       ? notNumberValueErrorMessage
                       : ""
@@ -445,7 +445,7 @@ function DataInputs({ dataSubmit }) {
 
       <Button
         disabled={setsInputs.some((set) =>
-          set.dots.some(
+          set.inputs.some(
             (dot) =>
               dot.first.trim().length === 0 || dot.second.trim().length === 0
           )

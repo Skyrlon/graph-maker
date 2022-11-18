@@ -25,7 +25,7 @@ function App() {
     setData({
       ...dataSubmitted,
       sets: dataSubmitted.sets.map((set) => {
-        return { ...set, dots: sortArrayOfObjects(set.dots, "first") };
+        return { ...set, inputs: sortArrayOfObjects(set.inputs, "first") };
       }),
     });
   };

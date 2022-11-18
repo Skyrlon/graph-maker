@@ -40,7 +40,7 @@ function Graph({ data, sendSvgData }) {
   const getLowestValues = (key) => {
     let lowestValueOfEachSet = [];
     data.sets.forEach((set) => {
-      lowestValueOfEachSet.push(sortArrayOfObjects(set.dots, key)[0][key]);
+      lowestValueOfEachSet.push(sortArrayOfObjects(set.inputs, key)[0][key]);
     });
     lowestValueOfEachSet.sort((a, b) => Number(a) - Number(b));
     return lowestValueOfEachSet;
@@ -50,8 +50,8 @@ function Graph({ data, sendSvgData }) {
     let largestValueOfEachSet = [];
     data.sets.forEach((set) =>
       largestValueOfEachSet.push(
-        sortArrayOfObjects(set.dots, key)[
-          sortArrayOfObjects(set.dots, key).length - 1
+        sortArrayOfObjects(set.inputs, key)[
+          sortArrayOfObjects(set.inputs, key).length - 1
         ][key]
       )
     );
@@ -253,10 +253,10 @@ function Graph({ data, sendSvgData }) {
                 fill="none"
                 stroke={set.color}
                 strokeWidth={axisStrokeWidth / 2}
-                d={`M ${getPositionX(set.dots[0].first)},${getPositionY(
-                  set.dots[0].second
+                d={`M ${getPositionX(set.inputs[0].first)},${getPositionY(
+                  set.inputs[0].second
                 )}
-              ${set.dots
+              ${set.inputs
                 .map(
                   (dot) =>
                     `L ${getPositionX(dot.first)},${getPositionY(dot.second)}`
@@ -266,7 +266,7 @@ function Graph({ data, sendSvgData }) {
             ))}
 
             {data.sets.map((set) =>
-              set.dots.map((dot) => (
+              set.inputs.map((dot) => (
                 <circle
                   key={dot.id}
                   cx={getPositionX(dot.first)}
