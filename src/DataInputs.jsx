@@ -54,9 +54,9 @@ function DataInputs({ dataSubmit }) {
       id: 0,
       name: "Set 1",
       color: "#000000",
-      inputs: [
-        { id: 0, first: "", second: "" },
-        { id: 1, first: "", second: "" },
+      groups: [
+        { id: 0, inputs: ["", ""] },
+        { id: 1, inputs: ["", ""] },
       ],
     },
   ]);
@@ -86,17 +86,25 @@ function DataInputs({ dataSubmit }) {
     });
   };
 
-  const handleFirstInputChange = (e, setID, inputsID) => {
+  const handleInputChange = (e, setID, groupID, inputID) => {
     setSetsInputs(
       setsInputs.map((set) => {
         if (set.id === setID) {
           return {
             ...set,
-            inputs: set.inputs.map((dot) => {
-              if (dot.id === inputsID) {
-                return { ...dot, first: e.target.value };
+            groups: set.groups.map((group) => {
+              if (group.id === groupID) {
+                return {
+                  ...group,
+                  inputs: group.inputs.map((input, index) => {
+                    if (index === inputID) {
+                      return e.target.value;
+                    }
+                    return input;
+                  }),
+                };
               } else {
-                return dot;
+                return group;
               }
             }),
           };
@@ -107,40 +115,16 @@ function DataInputs({ dataSubmit }) {
     );
   };
 
-  const handleSecondInputChange = (e, setID, inputsID) => {
-    setSetsInputs(
-      setsInputs.map((set) => {
-        if (set.id === setID) {
-          return {
-            ...set,
-            inputs: set.inputs.map((dot) => {
-              if (dot.id === inputsID) {
-                return { ...dot, second: e.target.value };
-              } else {
-                return dot;
-              }
-            }),
-          };
-        } else {
-          return set;
-        }
-      })
-    );
-  };
-
-  const addInput = (setID) => {
+  const addGroup = (setID) => {
     const lastInputsID = setsInputs
       .find((set) => set.id === setID)
-      .inputs.find((dot, index, array) => index === array.length - 1).id;
+      .groups.find((group, index, array) => index === array.length - 1).id;
     setSetsInputs(
       setsInputs.map((set) => {
         if (set.id === setID) {
           return {
             ...set,
-            inputs: [
-              ...set.inputs,
-              { id: lastInputsID + 1, first: "", second: "" },
-            ],
+            groups: [...set.groups, { id: lastInputsID + 1, inputs: ["", ""] }],
           };
         } else {
           return set;
@@ -149,13 +133,13 @@ function DataInputs({ dataSubmit }) {
     );
   };
 
-  const deleteInput = (setID, inputsID) => {
+  const deleteGroup = (setID, groupID) => {
     setSetsInputs(
       setsInputs.map((set) => {
         if (set.id === setID) {
           return {
             ...set,
-            inputs: [...set.inputs.filter((dot) => dot.id !== inputsID)],
+            groups: [...set.groups.filter((group) => group.id !== groupID)],
           };
         } else {
           return set;
@@ -171,9 +155,9 @@ function DataInputs({ dataSubmit }) {
         id: setsInputs[setsInputs.length - 1].id + 1,
         name: "New set",
         color: "#000000",
-        inputs: [
-          { id: 0, first: "", second: "" },
-          { id: 1, first: "", second: "" },
+        groups: [
+          { id: 0, inputs: ["", ""] },
+          { id: 1, inputs: ["", ""] },
         ],
       },
     ]);
@@ -234,7 +218,7 @@ function DataInputs({ dataSubmit }) {
   };
 
   const handleSubmit = () => {
-    let sameValues = [];
+    /* let sameValues = [];
     const errors = [];
 
     sameValues = setsInputs.map((set) => {
@@ -260,16 +244,16 @@ function DataInputs({ dataSubmit }) {
           };
         }),
       };
-    });
+    }); */
 
-    if (
+    /* if (
       !sameValues.some((set) => set.inputs.some((dot) => !!dot.first)) &&
       !valueIsNotNumber.some((set) =>
         set.inputs.some((dot) => !!dot.first || !!dot.second)
       )
-    ) {
-      dataSubmit({ title: titleInput, axis: axisInputs, sets: setsInputs });
-    }
+    ) { */
+    dataSubmit({ title: titleInput, axis: axisInputs, sets: setsInputs });
+    /* }
     if (!sameValues.some((set) => set.inputs.some((dot) => !!dot.first))) {
       errors.push("Got same value as another input");
     }
@@ -281,7 +265,7 @@ function DataInputs({ dataSubmit }) {
       errors.push("Value is not a number");
     }
     setInputsWithSameValue(sameValues);
-    setInputsWithWrongValues(valueIsNotNumber);
+    setInputsWithWrongValues(valueIsNotNumber); */
   };
 
   return (
@@ -352,79 +336,63 @@ function DataInputs({ dataSubmit }) {
             </Box>
           </AccordionSummary>
           <AccordionDetails>
-            {set.inputs.map((dot) => (
+            {set.groups.map((group) => (
               <Box
-                key={dot.id}
+                key={group.id}
                 sx={{
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
                 }}
               >
-                <TextField
-                  required
-                  value={dot.first}
-                  onChange={(e) => handleFirstInputChange(e, set.id, dot.id)}
-                  error={
-                    !!inputsWithSameValue.some(
-                      (x) =>
-                        x.id === set.id &&
-                        x.inputs.some((y) => !!y.first && y.id === dot.id)
-                    ) ||
-                    (inputsWithWrongValues.length > 0 &&
-                      !!inputsWithWrongValues.some(
+                {group.inputs.map((input, index) => (
+                  <TextField
+                    required
+                    key={index}
+                    value={group.inputs[index]}
+                    onChange={(e) =>
+                      handleInputChange(e, set.id, group.id, index)
+                    }
+                    /* error={
+                      !!inputsWithSameValue.some(
                         (x) =>
                           x.id === set.id &&
-                          x.inputs.some((y) => !!y.first && y.id === dot.id)
-                      ))
-                  }
-                  helperText={
-                    <>
-                      {!!inputsWithSameValue.some(
-                        (x) =>
-                          x.id === set.id &&
-                          x.inputs.some((y) => !!y.first && y.id === dot.id)
-                      ) ? (
-                        <>
-                          {sameValueErrorMessage}
-                          <br />
-                        </>
-                      ) : (
-                        ""
-                      )}
-                      {!!inputsWithWrongValues.some(
-                        (x) =>
-                          x.id === set.id &&
-                          x.inputs.some((y) => !!y.first && y.id === dot.id)
-                      )
-                        ? notNumberValueErrorMessage
-                        : ""}
-                    </>
-                  }
-                />
-                <TextField
-                  required
-                  value={dot.second}
-                  onChange={(e) => handleSecondInputChange(e, set.id, dot.id)}
-                  error={
-                    !!inputsWithWrongValues.some(
-                      (x) =>
-                        x.id === set.id &&
-                        x.inputs.some((y) => !!y.second && y.id === dot.id)
-                    )
-                  }
-                  helperText={
-                    !!inputsWithWrongValues.some(
-                      (x) =>
-                        x.id === set.id &&
-                        x.inputs.some((y) => !!y.second && y.id === dot.id)
-                    )
-                      ? notNumberValueErrorMessage
-                      : ""
-                  }
-                />
-                {!(dot.id === 0 || dot.id === 1) && (
-                  <IconButton onClick={() => deleteInput(set.id, dot.id)}>
+                          x.groups.some((y) => !!y.first && y.id === dot.id)
+                      ) ||
+                      (inputsWithWrongValues.length > 0 &&
+                        !!inputsWithWrongValues.some(
+                          (x) =>
+                            x.id === set.id &&
+                            x.inputs.some((y) => !!y.first && y.id === dot.id)
+                        ))
+                    }
+                    helperText={
+                      <>
+                        {!!inputsWithSameValue.some(
+                          (x) =>
+                            x.id === set.id &&
+                            x.inputs.some((y) => !!y.first && y.id === dot.id)
+                        ) ? (
+                          <>
+                            {sameValueErrorMessage}
+                            <br />
+                          </>
+                        ) : (
+                          ""
+                        )}
+                        {!!inputsWithWrongValues.some(
+                          (x) =>
+                            x.id === set.id &&
+                            x.inputs.some((y) => !!y.first && y.id === dot.id)
+                        )
+                          ? notNumberValueErrorMessage
+                          : ""}
+                      </>
+                    } */
+                  />
+                ))}
+                {!(group.id === 0 || group.id === 1) && (
+                  <IconButton onClick={() => deleteGroup(set.id, group.id)}>
                     <Delete />
                   </IconButton>
                 )}
@@ -433,7 +401,7 @@ function DataInputs({ dataSubmit }) {
           </AccordionDetails>
 
           <IconButton
-            onClick={() => addInput(set.id)}
+            onClick={() => addGroup(set.id)}
             sx={{ width: "2rem", height: "2rem" }}
           >
             <Add />
@@ -444,12 +412,12 @@ function DataInputs({ dataSubmit }) {
       <Button onClick={addSet}>Add new set</Button>
 
       <Button
-        disabled={setsInputs.some((set) =>
+        /* disabled={setsInputs.some((set) =>
           set.inputs.some(
             (dot) =>
               dot.first.trim().length === 0 || dot.second.trim().length === 0
           )
-        )}
+        )} */
         onClick={handleSubmit}
       >
         Submit
