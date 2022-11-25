@@ -46,7 +46,7 @@ function App() {
         <DataInputs dataSubmit={handleDataSubmitted} />
         {data && (
           <>
-            {/* <Graph data={data} sendSvgData={(x) => setSvgData(x)} /> */}
+            <Graph data={data} sendSvgData={(x) => setSvgData(x)} />
 
             <DownloadSection svgData={{ ...svgData, title: data.title }} />
           </>

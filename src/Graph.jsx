@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
-import { sortArrayOfObjects } from "./Helpers";
 
 const StyledGraph = styled.div`
   grid-area: graph;
@@ -37,30 +36,34 @@ function Graph({ data, sendSvgData }) {
     return Math.pow(10, Math.ceil(number).toString().length - 1);
   };
 
-  const getLowestValues = (key) => {
+  const getLowestValues = (index) => {
     let lowestValueOfEachSet = [];
     data.sets.forEach((set) => {
-      lowestValueOfEachSet.push(sortArrayOfObjects(set.inputs, key)[0][key]);
+      lowestValueOfEachSet.push(
+        [...set.groups].sort(
+          (a, b) => Number(a.inputs[index]) - Number(b.inputs[index])
+        )[0].inputs[index]
+      );
     });
     lowestValueOfEachSet.sort((a, b) => Number(a) - Number(b));
     return lowestValueOfEachSet;
   };
 
-  const getLargestValues = (key) => {
+  const getLargestValues = (index) => {
     let largestValueOfEachSet = [];
-    data.sets.forEach((set) =>
+    data.sets.forEach((set) => {
       largestValueOfEachSet.push(
-        sortArrayOfObjects(set.inputs, key)[
-          sortArrayOfObjects(set.inputs, key).length - 1
-        ][key]
-      )
-    );
+        [...set.groups].sort(
+          (a, b) => Number(b.inputs[index]) - Number(a.inputs[index])
+        )[0].inputs[index]
+      );
+    });
     largestValueOfEachSet.sort((a, b) => Number(b) - Number(a));
     return largestValueOfEachSet;
   };
 
   const getPositionX = (number) => {
-    const lowestValue = getLowestValues("first")[0];
+    const lowestValue = getLowestValues(0)[0];
     const referenceValue = lowestValue < 0 ? lowestValue : 0;
     return (
       axisMargin +
@@ -70,7 +73,7 @@ function Graph({ data, sendSvgData }) {
   };
 
   const getPositionY = (number) => {
-    const largestY = getLargestValues("second")[0];
+    const largestY = getLargestValues(1)[0];
     const referenceValue = largestY > 0 ? largestY : 0;
     return (
       axisMargin +
@@ -115,14 +118,8 @@ function Graph({ data, sendSvgData }) {
 
       const setAxisData = () => {
         setAxis({
-          x: calculateAmplitude(
-            getLowestValues("first")[0],
-            getLargestValues("first")[0]
-          ),
-          y: calculateAmplitude(
-            getLowestValues("second")[0],
-            getLargestValues("second")[0]
-          ),
+          x: calculateAmplitude(getLowestValues(0)[0], getLargestValues(0)[0]),
+          y: calculateAmplitude(getLowestValues(1)[0], getLargestValues(1)[0]),
         });
       };
 
@@ -253,24 +250,26 @@ function Graph({ data, sendSvgData }) {
                 fill="none"
                 stroke={set.color}
                 strokeWidth={axisStrokeWidth / 2}
-                d={`M ${getPositionX(set.inputs[0].first)},${getPositionY(
-                  set.inputs[0].second
+                d={`M ${getPositionX(set.groups[0].inputs[0])},${getPositionY(
+                  set.groups[0].inputs[1]
                 )}
-              ${set.inputs
+              ${set.groups
                 .map(
-                  (dot) =>
-                    `L ${getPositionX(dot.first)},${getPositionY(dot.second)}`
+                  (group) =>
+                    `L ${getPositionX(group.inputs[0])},${getPositionY(
+                      group.inputs[1]
+                    )}`
                 )
                 .join(" ")}`}
               />
             ))}
 
             {data.sets.map((set) =>
-              set.inputs.map((dot) => (
+              set.groups.map((group) => (
                 <circle
-                  key={dot.id}
-                  cx={getPositionX(dot.first)}
-                  cy={getPositionY(dot.second)}
+                  key={group.id}
+                  cx={getPositionX(group.inputs[0])}
+                  cy={getPositionY(group.inputs[1])}
                   r={axisStrokeWidth}
                   fill={graphColor}
                 />
