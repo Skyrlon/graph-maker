@@ -87,32 +87,35 @@ function DataInputs({ dataSubmit }) {
   };
 
   const handleInputChange = (e, setID, groupID, inputID) => {
-    setSetsInputs(
-      setsInputs.map((set) => {
-        if (set.id === setID) {
-          return {
-            ...set,
-            groups: set.groups.map((group) => {
-              if (group.id === groupID) {
-                return {
-                  ...group,
-                  inputs: group.inputs.map((input, index) => {
-                    if (index === inputID) {
-                      return e.target.value;
-                    }
-                    return input;
-                  }),
-                };
-              } else {
-                return group;
-              }
-            }),
-          };
-        } else {
-          return set;
-        }
-      })
-    );
+    const regex = /^\d*\.?\d*$/;
+    if (e.target.value == "" || regex.test(e.target.value)) {
+      setSetsInputs(
+        setsInputs.map((set) => {
+          if (set.id === setID) {
+            return {
+              ...set,
+              groups: set.groups.map((group) => {
+                if (group.id === groupID) {
+                  return {
+                    ...group,
+                    inputs: group.inputs.map((input, index) => {
+                      if (index === inputID) {
+                        return e.target.value;
+                      }
+                      return input;
+                    }),
+                  };
+                } else {
+                  return group;
+                }
+              }),
+            };
+          } else {
+            return set;
+          }
+        })
+      );
+    }
   };
 
   const addGroup = (setID) => {
