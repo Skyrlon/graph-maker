@@ -43,8 +43,6 @@ const StyledDataInputs = styled(Box)`
 function DataInputs({ dataSubmit }) {
   const sameValueErrorMessage = "Input have same value as another";
 
-  const notNumberValueErrorMessage = "Value is not a number";
-
   const [titleInput, setTitleInput] = useState("");
 
   const [axisInputs, setAxisInputs] = useState({ first: "", second: "" });
@@ -64,9 +62,21 @@ function DataInputs({ dataSubmit }) {
   const [expandedAccordions, setExpandedAccordions] = useState([0]);
 
   const [inputsWithSameValue, setInputsWithSameValue] = useState([]);
-  const [inputsWithWrongValues, setInputsWithWrongValues] = useState([]);
 
   const [showColorPicker, setShowColorPicker] = useState(undefined);
+
+  const findDuplicates = (array, index) => {
+    let sortedArray = [...array].sort(
+      (a, b) => a.inputs[index] - b.inputs[index]
+    );
+    let results = [];
+    for (let i = 0; i < sortedArray.length - 1; i++) {
+      if (sortedArray[i + 1].inputs[index] === sortedArray[i].inputs[index]) {
+        results.push(sortedArray[i].inputs[index]);
+      }
+    }
+    return results;
+  };
 
   const handleTitleInputChange = (e) => {
     setTitleInput(e.target.value);
@@ -88,7 +98,7 @@ function DataInputs({ dataSubmit }) {
 
   const handleInputChange = (e, setID, groupID, inputID) => {
     const regex = /^\d*\.?\d*$/;
-    if (e.target.value == "" || regex.test(e.target.value)) {
+    if (e.target.value === "" || regex.test(e.target.value)) {
       setSetsInputs(
         setsInputs.map((set) => {
           if (set.id === setID) {
@@ -221,54 +231,24 @@ function DataInputs({ dataSubmit }) {
   };
 
   const handleSubmit = () => {
-    /* let sameValues = [];
+    let sameValues = [];
     const errors = [];
 
     sameValues = setsInputs.map((set) => {
       return {
-        ...set,
-        inputs: set.inputs.map((dot, index, array) => {
-          return {
-            ...dot,
-            first: !!array.find((x) => x.first === dot.first && x.id !== index),
-          };
-        }),
+        id: set.id,
+        duplicates: findDuplicates(set.groups, 0),
       };
     });
 
-    const valueIsNotNumber = setsInputs.map((set) => {
-      return {
-        ...set,
-        inputs: set.inputs.map((dot) => {
-          return {
-            ...dot,
-            first: isNaN(dot.first),
-            second: isNaN(dot.second),
-          };
-        }),
-      };
-    }); */
-
-    /* if (
-      !sameValues.some((set) => set.inputs.some((dot) => !!dot.first)) &&
-      !valueIsNotNumber.some((set) =>
-        set.inputs.some((dot) => !!dot.first || !!dot.second)
-      )
-    ) { */
-    dataSubmit({ title: titleInput, axis: axisInputs, sets: setsInputs });
-    /* }
-    if (!sameValues.some((set) => set.inputs.some((dot) => !!dot.first))) {
+    if (!sameValues.some((set) => set.duplicates.length > 0)) {
+      dataSubmit({ title: titleInput, axis: axisInputs, sets: setsInputs });
+    }
+    if (sameValues.some((set) => set.duplicates.length > 0)) {
       errors.push("Got same value as another input");
     }
-    if (
-      valueIsNotNumber.some((set) =>
-        set.inputs.some((dot) => !!dot.first || !!dot.second)
-      )
-    ) {
-      errors.push("Value is not a number");
-    }
+
     setInputsWithSameValue(sameValues);
-    setInputsWithWrongValues(valueIsNotNumber); */
   };
 
   return (
@@ -356,42 +336,29 @@ function DataInputs({ dataSubmit }) {
                     onChange={(e) =>
                       handleInputChange(e, set.id, group.id, index)
                     }
-                    /* error={
+                    error={
+                      index === 0 &&
                       !!inputsWithSameValue.some(
                         (x) =>
                           x.id === set.id &&
-                          x.groups.some((y) => !!y.first && y.id === dot.id)
-                      ) ||
-                      (inputsWithWrongValues.length > 0 &&
-                        !!inputsWithWrongValues.some(
-                          (x) =>
-                            x.id === set.id &&
-                            x.inputs.some((y) => !!y.first && y.id === dot.id)
-                        ))
+                          x.duplicates.includes(group.inputs[index])
+                      )
                     }
                     helperText={
                       <>
-                        {!!inputsWithSameValue.some(
+                        {index === 0 &&
+                        !!inputsWithSameValue.some(
                           (x) =>
                             x.id === set.id &&
-                            x.inputs.some((y) => !!y.first && y.id === dot.id)
+                            x.duplicates.includes(group.inputs[index])
                         ) ? (
                           <>
                             {sameValueErrorMessage}
                             <br />
                           </>
-                        ) : (
-                          ""
-                        )}
-                        {!!inputsWithWrongValues.some(
-                          (x) =>
-                            x.id === set.id &&
-                            x.inputs.some((y) => !!y.first && y.id === dot.id)
-                        )
-                          ? notNumberValueErrorMessage
-                          : ""}
+                        ) : null}
                       </>
-                    } */
+                    }
                   />
                 ))}
                 {!(group.id === 0 || group.id === 1) && (
