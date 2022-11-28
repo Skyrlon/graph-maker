@@ -382,12 +382,11 @@ function DataInputs({ dataSubmit }) {
       <Button onClick={addSet}>Add new set</Button>
 
       <Button
-        /* disabled={setsInputs.some((set) =>
-          set.inputs.some(
-            (dot) =>
-              dot.first.trim().length === 0 || dot.second.trim().length === 0
+        disabled={setsInputs.some((set) =>
+          set.groups.some((group) =>
+            group.inputs.some((input) => input.trim().length === 0)
           )
-        )} */
+        )}
         onClick={handleSubmit}
       >
         Submit
