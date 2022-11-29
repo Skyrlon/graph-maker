@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   IconButton,
+  MenuItem,
   TextField,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -16,6 +17,7 @@ import { ClickAwayListener } from "@mui/base";
 
 const StyledDataInputs = styled(Box)`
   grid-area: data-inputs;
+  padding-top: 10px;
   border: 1px solid;
   display: flex;
   flex-direction: column;
@@ -42,6 +44,10 @@ const StyledDataInputs = styled(Box)`
 
 function DataInputs({ dataSubmit }) {
   const sameValueErrorMessage = "Input have same value as another";
+
+  const graphTypesList = ["linear"];
+
+  const [graphType, setGraphType] = useState("linear");
 
   const [titleInput, setTitleInput] = useState("");
 
@@ -242,7 +248,12 @@ function DataInputs({ dataSubmit }) {
     });
 
     if (!sameValues.some((set) => set.duplicates.length > 0)) {
-      dataSubmit({ title: titleInput, axis: axisInputs, sets: setsInputs });
+      dataSubmit({
+        graphType,
+        title: titleInput,
+        axis: axisInputs,
+        sets: setsInputs,
+      });
     }
     if (sameValues.some((set) => set.duplicates.length > 0)) {
       errors.push("Got same value as another input");
@@ -253,6 +264,20 @@ function DataInputs({ dataSubmit }) {
 
   return (
     <StyledDataInputs>
+      <TextField
+        select
+        variant="outlined"
+        label="Graph type"
+        value={graphType}
+        onChange={(e) => setGraphType(e.target.value)}
+      >
+        {graphTypesList.map((graphTypeItem) => (
+          <MenuItem key={graphTypeItem} value={graphTypeItem}>
+            {graphTypeItem}
+          </MenuItem>
+        ))}
+      </TextField>
+
       <TextField
         label="Title"
         variant="standard"

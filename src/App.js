@@ -4,7 +4,6 @@ import DataInputs from "./DataInputs";
 import styled from "styled-components";
 import { useState } from "react";
 import Graph from "./Graph";
-import { sortArrayOfObjects } from "./Helpers";
 import DownloadSection from "./DownloadSection";
 
 const StyledBox = styled(Box)`
