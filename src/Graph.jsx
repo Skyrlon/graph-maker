@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import LinearGraph from "./LinearGraph";
 import { useCallback } from "react";
+import BarGraph from "./BarGraph";
 
 const StyledGraph = styled.div`
   grid-area: graph;
@@ -64,6 +65,13 @@ function Graph({ data, sendSvgData }) {
         >
           {data.graphType === "linear" && (
             <LinearGraph
+              data={data}
+              sendSvgData={sendSvgData}
+              graphData={graphData}
+            />
+          )}
+          {data.graphType === "bar" && (
+            <BarGraph
               data={data}
               sendSvgData={sendSvgData}
               graphData={graphData}

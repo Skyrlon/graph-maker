@@ -45,7 +45,7 @@ const StyledDataInputs = styled(Box)`
 function DataInputs({ dataSubmit }) {
   const sameValueErrorMessage = "Input have same value as another";
 
-  const graphTypesList = ["linear"];
+  const graphTypesList = ["linear", "bar"];
 
   const [graphType, setGraphType] = useState("linear");
 
