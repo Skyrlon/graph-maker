@@ -186,6 +186,32 @@ export default function BarGraph({ data, sendData, graphData }) {
             )}`}`}
           />
         ))}
+
+        {data.sets.map((set, index) => (
+          <g
+            key={set.id}
+            transform={`translate(${getPositionX(index + 1)}, ${getPositionY(
+              0
+            )})`}
+          >
+            <rect
+              fill={graphData.graphColor}
+              x={-graphData.textSize / 8}
+              y={0}
+              width={graphData.textSize / 4}
+              height={graphData.textSize/2}
+            />
+            <text
+              x={0}
+              y={graphData.textSize * 2}
+              fontSize={graphData.textSize}
+              textAnchor="middle"
+              color={graphData.graphColor}
+            >
+              {set.name}
+            </text>
+          </g>
+        ))}
       </>
     )
   );
