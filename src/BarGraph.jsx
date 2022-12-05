@@ -174,16 +174,15 @@ export default function BarGraph({ data, sendData, graphData }) {
         )}
 
         {data.sets.map((set, index) => (
-          <path
+          <rect
             key={set.id}
-            fill="none"
-            stroke={set.color}
-            strokeWidth={graphData.axisStrokeWidth / 2}
-            d={`${`M ${getPositionX(index + 1)},${getPositionY(
-              0
-            )} L ${getPositionX(index + 1)},${getPositionY(
-              set.groups[0].inputs[0]
-            )}`}`}
+            x={getPositionX(index + 1) - (graphData.axisStrokeWidth * 5) / 2}
+            y={getPositionY(set.groups[0].inputs[0])}
+            width={graphData.axisStrokeWidth * 5}
+            height={
+              getPositionY(set.groups[0].inputs[0]) - graphData.axisMargin
+            }
+            fill={set.color}
           />
         ))}
 
@@ -199,7 +198,7 @@ export default function BarGraph({ data, sendData, graphData }) {
               x={-graphData.textSize / 8}
               y={0}
               width={graphData.textSize / 4}
-              height={graphData.textSize/2}
+              height={graphData.textSize / 2}
             />
             <text
               x={0}
