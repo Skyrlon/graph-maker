@@ -14,6 +14,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import { SketchPicker } from "react-color";
 import { ClickAwayListener } from "@mui/base";
+import { useEffect } from "react";
 
 const StyledDataInputs = styled(Box)`
   grid-area: data-inputs;
@@ -138,18 +139,36 @@ function DataInputs({ dataSubmit }) {
     const lastInputsID = setsInputs
       .find((set) => set.id === setID)
       .groups.find((group, index, array) => index === array.length - 1).id;
-    setSetsInputs(
-      setsInputs.map((set) => {
-        if (set.id === setID) {
-          return {
-            ...set,
-            groups: [...set.groups, { id: lastInputsID + 1, inputs: ["", ""] }],
-          };
-        } else {
-          return set;
-        }
-      })
-    );
+    if (graphType === "linear") {
+      setSetsInputs(
+        setsInputs.map((set) => {
+          if (set.id === setID) {
+            return {
+              ...set,
+              groups: [
+                ...set.groups,
+                { id: lastInputsID + 1, inputs: ["", ""] },
+              ],
+            };
+          } else {
+            return set;
+          }
+        })
+      );
+    } else if (graphType === "bar") {
+      setSetsInputs(
+        setsInputs.map((set) => {
+          if (set.id === setID) {
+            return {
+              ...set,
+              groups: [...set.groups, { id: lastInputsID + 1, inputs: [""] }],
+            };
+          } else {
+            return set;
+          }
+        })
+      );
+    }
   };
 
   const deleteGroup = (setID, groupID) => {
@@ -168,18 +187,30 @@ function DataInputs({ dataSubmit }) {
   };
 
   const addSet = () => {
-    setSetsInputs([
-      ...setsInputs,
-      {
-        id: setsInputs[setsInputs.length - 1].id + 1,
-        name: "New set",
-        color: "#000000",
-        groups: [
-          { id: 0, inputs: ["", ""] },
-          { id: 1, inputs: ["", ""] },
-        ],
-      },
-    ]);
+    if (graphType === "linear") {
+      setSetsInputs([
+        ...setsInputs,
+        {
+          id: setsInputs[setsInputs.length - 1].id + 1,
+          name: "New Set",
+          color: "#000000",
+          groups: [
+            { id: 0, inputs: ["", ""] },
+            { id: 1, inputs: ["", ""] },
+          ],
+        },
+      ]);
+    } else if (graphType === "bar") {
+      setSetsInputs([
+        ...setsInputs,
+        {
+          id: setsInputs[setsInputs.length - 1].id + 1,
+          name: "New Set",
+          color: "#000000",
+          groups: [{ id: 0, inputs: [""] }],
+        },
+      ]);
+    }
     setExpandedAccordions([
       ...expandedAccordions,
       setsInputs[setsInputs.length - 1].id + 1,
@@ -261,6 +292,31 @@ function DataInputs({ dataSubmit }) {
 
     setInputsWithSameValue(sameValues);
   };
+
+  useEffect(() => {
+    if (graphType === "linear") {
+      setSetsInputs([
+        {
+          id: 0,
+          name: "Set 1",
+          color: "#000000",
+          groups: [
+            { id: 0, inputs: ["", ""] },
+            { id: 1, inputs: ["", ""] },
+          ],
+        },
+      ]);
+    } else if (graphType === "bar") {
+      setSetsInputs([
+        {
+          id: 0,
+          name: "Set 1",
+          color: "#000000",
+          groups: [{ id: 0, inputs: [""] }],
+        },
+      ]);
+    }
+  }, [graphType]);
 
   return (
     <StyledDataInputs>
@@ -386,7 +442,10 @@ function DataInputs({ dataSubmit }) {
                     }
                   />
                 ))}
-                {!(group.id === 0 || group.id === 1) && (
+                {!(
+                  group.id === 0 ||
+                  (graphType === "linear" && group.id === 1)
+                ) && (
                   <IconButton onClick={() => deleteGroup(set.id, group.id)}>
                     <Delete />
                   </IconButton>
