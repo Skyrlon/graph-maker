@@ -180,7 +180,10 @@ export default function BarGraph({ data, sendData, graphData }) {
             y={getPositionY(set.groups[0].inputs[0])}
             width={graphData.axisStrokeWidth * 5}
             height={
-              getPositionY(set.groups[0].inputs[0]) - graphData.axisMargin
+              graphData.imageLength -
+              getPositionY(set.groups[0].inputs[0]) -
+              graphData.axisMargin -
+              graphData.axisStrokeWidth / 2
             }
             fill={set.color}
           />

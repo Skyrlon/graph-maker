@@ -23,12 +23,6 @@ function App() {
   const handleDataSubmitted = (dataSubmitted) => {
     setData({
       ...dataSubmitted,
-      sets: dataSubmitted.sets.map((set) => {
-        return {
-          ...set,
-          groups: [...set.groups].sort((a, b) => a.inputs[0] - b.inputs[0]),
-        };
-      }),
     });
   };
 
