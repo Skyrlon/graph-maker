@@ -172,6 +172,24 @@ export default function BarGraph({ data, sendData, graphData }) {
               </g>
             )
         )}
+        <text
+          textAnchor="middle"
+          x={getPositionX(0)}
+          y={graphData.axisMargin / 3}
+          fontSize={graphData.textSize}
+          color={graphData.graphColor}
+        >
+          {data.axis.second}
+        </text>
+        <text
+          textAnchor="middle"
+          x={graphData.imageLength / 2}
+          y={graphData.imageLength - graphData.axisMargin / 4}
+          fontSize={graphData.textSize}
+          color={graphData.graphColor}
+        >
+          {data.title}
+        </text>
 
         {data.sets.map((set, index) => (
           <rect
