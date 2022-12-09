@@ -7,32 +7,6 @@ export default function BarGraph({ data, sendData, graphData }) {
     return Math.pow(10, Math.ceil(number).toString().length - 1);
   };
 
-  const getLowestValues = (index) => {
-    let lowestValueOfEachSet = [];
-    data.sets.forEach((set) => {
-      lowestValueOfEachSet.push(
-        [...set.groups].sort(
-          (a, b) => Number(a.inputs[index]) - Number(b.inputs[index])
-        )[0].inputs[index]
-      );
-    });
-    lowestValueOfEachSet.sort((a, b) => Number(a) - Number(b));
-    return lowestValueOfEachSet;
-  };
-
-  const getLargestValues = (index) => {
-    let largestValueOfEachSet = [];
-    data.sets.forEach((set) => {
-      largestValueOfEachSet.push(
-        [...set.groups].sort(
-          (a, b) => Number(b.inputs[index]) - Number(a.inputs[index])
-        )[0].inputs[index]
-      );
-    });
-    largestValueOfEachSet.sort((a, b) => Number(b) - Number(a));
-    return largestValueOfEachSet;
-  };
-
   const getPositionX = (number) => {
     const lowestValue = 0;
     const referenceValue = lowestValue < 0 ? lowestValue : 0;
@@ -44,13 +18,28 @@ export default function BarGraph({ data, sendData, graphData }) {
   };
 
   const getPositionY = (number) => {
-    const largestY = getLargestValues(0)[0];
+    const largestY = getLargestStackedValue();
     const referenceValue = largestY > 0 ? largestY : 0;
     return (
       graphData.axisMargin +
       Math.abs(Number(number) - referenceValue) *
         (graphData.axisLength / axis.y.amplitude)
     );
+  };
+
+  const getLargestStackedValue = () => {
+    let stackedValues = [];
+    data.sets.forEach((set) => {
+      stackedValues.push(
+        set.groups.reduce(
+          (accumulator, currentGroup) =>
+            Number(accumulator) + Number(currentGroup.inputs[0]),
+          0
+        )
+      );
+    });
+    stackedValues.sort((a, b) => Number(b) - Number(a));
+    return stackedValues[0];
   };
 
   useEffect(
@@ -88,15 +77,9 @@ export default function BarGraph({ data, sendData, graphData }) {
       };
 
       const setAxisData = () => {
-        console.log(
-          "x",
-          calculateAmplitude(0, data.sets.length + 1),
-          "y",
-          calculateAmplitude(getLowestValues(0)[0], getLargestValues(0)[0])
-        );
         setAxis({
           x: calculateAmplitude(0, data.sets.length + 1),
-          y: calculateAmplitude(getLowestValues(0)[0], getLargestValues(0)[0]),
+          y: calculateAmplitude(0, getLargestStackedValue()),
         });
       };
 
