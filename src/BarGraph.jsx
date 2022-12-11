@@ -175,19 +175,35 @@ export default function BarGraph({ data, sendData, graphData }) {
         </text>
 
         {data.sets.map((set, index) => (
-          <rect
+          <g
             key={set.id}
-            x={getPositionX(index + 1) - (graphData.axisStrokeWidth * 5) / 2}
-            y={getPositionY(set.groups[0].inputs[0])}
-            width={graphData.axisStrokeWidth * 5}
-            height={
-              graphData.imageLength -
-              getPositionY(set.groups[0].inputs[0]) -
-              graphData.axisMargin -
-              graphData.axisStrokeWidth / 2
-            }
-            fill={set.color}
-          />
+            transform={`translate(${
+              getPositionX(index + 1) - (graphData.axisStrokeWidth * 5) / 2
+            }, 0)`}
+          >
+            {set.groups.map((group, index, array) => (
+              <rect
+                key={group.id}
+                x={0}
+                y={
+                  index === 0
+                    ? getPositionY(group.inputs[0])
+                    : getPositionY(
+                        Number(group.inputs[0]) +
+                          Number(array[index - 1].inputs[0])
+                      )
+                }
+                width={graphData.axisStrokeWidth * 5}
+                height={
+                  graphData.imageLength -
+                  getPositionY(group.inputs[0]) -
+                  graphData.axisMargin -
+                  graphData.axisStrokeWidth / 2
+                }
+                fill={set.color}
+              />
+            ))}
+          </g>
         ))}
 
         {data.sets.map((set, index) => (
