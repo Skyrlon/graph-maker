@@ -190,7 +190,14 @@ export default function BarGraph({ data, sendData, graphData }) {
                     ? getPositionY(group.inputs[0])
                     : getPositionY(
                         Number(group.inputs[0]) +
-                          Number(array[index - 1].inputs[0])
+                          Number(
+                            array
+                              .slice(0, index)
+                              .reduce(
+                                (a, b) => Number(a) + Number(b.inputs[0]),
+                                0
+                              )
+                          )
                       )
                 }
                 width={graphData.axisStrokeWidth * 5}
