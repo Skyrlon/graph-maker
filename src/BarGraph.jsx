@@ -186,26 +186,21 @@ export default function BarGraph({ data, sendData, graphData }) {
                 key={group.id}
                 x={0}
                 y={
-                  index === 0
-                    ? getPositionY(group.inputs[0])
-                    : getPositionY(
-                        Number(group.inputs[0]) +
-                          Number(
-                            array
-                              .slice(0, index)
-                              .reduce(
-                                (a, b) => Number(a) + Number(b.inputs[0]),
-                                0
-                              )
-                          )
+                  getPositionY(
+                    Number(group.inputs[0]) +
+                      Number(
+                        array
+                          .slice(0, index)
+                          .reduce((a, b) => Number(a) + Number(b.inputs[0]), 0)
                       )
+                  ) -
+                  graphData.axisStrokeWidth / 2
                 }
                 width={graphData.axisStrokeWidth * 5}
                 height={
                   graphData.imageLength -
                   getPositionY(group.inputs[0]) -
-                  graphData.axisMargin -
-                  graphData.axisStrokeWidth / 2
+                  graphData.axisMargin
                 }
                 fill={set.color}
               />
