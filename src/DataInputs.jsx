@@ -46,6 +46,8 @@ const StyledDataInputs = styled(Box)`
 function DataInputs({ dataSubmit }) {
   const sameValueErrorMessage = "Input have same value as another";
 
+  const [areAllInputsNumbers, setAreAllInputsNumbers] = useState(true);
+
   const graphTypesList = ["linear", "bar"];
 
   const [graphType, setGraphType] = useState("linear");
@@ -104,35 +106,32 @@ function DataInputs({ dataSubmit }) {
   };
 
   const handleInputChange = (e, setID, groupID, inputID) => {
-    const regex = /^\d*\.?\d*$/;
-    if (e.target.value === "" || regex.test(e.target.value)) {
-      setSetsInputs(
-        setsInputs.map((set) => {
-          if (set.id === setID) {
-            return {
-              ...set,
-              groups: set.groups.map((group) => {
-                if (group.id === groupID) {
-                  return {
-                    ...group,
-                    inputs: group.inputs.map((input, index) => {
-                      if (index === inputID) {
-                        return e.target.value;
-                      }
-                      return input;
-                    }),
-                  };
-                } else {
-                  return group;
-                }
-              }),
-            };
-          } else {
-            return set;
-          }
-        })
-      );
-    }
+    setSetsInputs(
+      setsInputs.map((set) => {
+        if (set.id === setID) {
+          return {
+            ...set,
+            groups: set.groups.map((group) => {
+              if (group.id === groupID) {
+                return {
+                  ...group,
+                  inputs: group.inputs.map((input, index) => {
+                    if (index === inputID) {
+                      return e.target.value;
+                    }
+                    return input;
+                  }),
+                };
+              } else {
+                return group;
+              }
+            }),
+          };
+        } else {
+          return set;
+        }
+      })
+    );
   };
 
   const addGroup = (setID) => {
@@ -278,7 +277,16 @@ function DataInputs({ dataSubmit }) {
       };
     });
 
-    if (!sameValues.some((set) => set.duplicates.length > 0)) {
+    const areAllInputsNumeric = setsInputs.every((set) =>
+      set.groups.every((group) =>
+        group.inputs.every((input) => !!Number(input) || Number(input) === 0)
+      )
+    );
+
+    if (
+      !sameValues.some((set) => set.duplicates.length > 0) &&
+      areAllInputsNumeric
+    ) {
       dataSubmit({
         graphType,
         title: titleInput,
@@ -288,6 +296,10 @@ function DataInputs({ dataSubmit }) {
     }
     if (sameValues.some((set) => set.duplicates.length > 0)) {
       errors.push("Got same value as another input");
+    }
+
+    if (!areAllInputsNumeric) {
+      setAreAllInputsNumbers(false);
     }
 
     setInputsWithSameValue(sameValues);
@@ -418,12 +430,15 @@ function DataInputs({ dataSubmit }) {
                       handleInputChange(e, set.id, group.id, index)
                     }
                     error={
-                      index === 0 &&
-                      !!inputsWithSameValue.some(
-                        (x) =>
-                          x.id === set.id &&
-                          x.duplicates.includes(group.inputs[index])
-                      )
+                      (index === 0 &&
+                        !!inputsWithSameValue.some(
+                          (x) =>
+                            x.id === set.id &&
+                            x.duplicates.includes(group.inputs[index])
+                        )) ||
+                      (!areAllInputsNumbers &&
+                        !Number(group.inputs[index]) &&
+                        Number(group.inputs[index]) !== 0)
                     }
                     helperText={
                       <>
@@ -438,6 +453,10 @@ function DataInputs({ dataSubmit }) {
                             <br />
                           </>
                         ) : null}
+                        {!areAllInputsNumbers &&
+                          !Number(group.inputs[index]) &&
+                          Number(group.inputs[index]) !== 0 &&
+                          "Not a number"}
                       </>
                     }
                   />
