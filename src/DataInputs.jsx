@@ -46,7 +46,7 @@ const StyledDataInputs = styled(Box)`
 function DataInputs({ dataSubmit }) {
   const sameValueErrorMessage = "Input have same value as another";
 
-  const [areAllInputsNumbers, setAreAllInputsNumbers] = useState(true);
+  const [areAllInputsNumbers, setAreAllInputsNumbers] = useState([]);
 
   const graphTypesList = ["linear", "bar"];
 
@@ -277,15 +277,27 @@ function DataInputs({ dataSubmit }) {
       };
     });
 
-    const areAllInputsNumeric = setsInputs.every((set) =>
-      set.groups.every((group) =>
-        group.inputs.every((input) => !!Number(input) || Number(input) === 0)
-      )
-    );
+    const areAllInputsNumeric = setsInputs.map((set) => {
+      return {
+        ...set,
+        groups: set.groups.map((group) => {
+          return {
+            ...group,
+            inputs: group.inputs.map(
+              (input) => !!Number(input) || Number(input) === 0
+            ),
+          };
+        }),
+      };
+    });
+
+    setAreAllInputsNumbers(areAllInputsNumeric);
 
     if (
       !sameValues.some((set) => set.duplicates.length > 0) &&
-      areAllInputsNumeric
+      areAllInputsNumeric.every((set) =>
+        set.groups.every((group) => group.inputs.every((input) => !!input))
+      )
     ) {
       dataSubmit({
         graphType,
@@ -296,10 +308,6 @@ function DataInputs({ dataSubmit }) {
     }
     if (sameValues.some((set) => set.duplicates.length > 0)) {
       errors.push("Got same value as another input");
-    }
-
-    if (!areAllInputsNumeric) {
-      setAreAllInputsNumbers(false);
     }
 
     setInputsWithSameValue(sameValues);
@@ -436,9 +444,10 @@ function DataInputs({ dataSubmit }) {
                             x.id === set.id &&
                             x.duplicates.includes(group.inputs[index])
                         )) ||
-                      (!areAllInputsNumbers &&
-                        !Number(group.inputs[index]) &&
-                        Number(group.inputs[index]) !== 0)
+                      (areAllInputsNumbers.length > 0 &&
+                        !areAllInputsNumbers
+                          .find((x) => x.id === set.id)
+                          .groups.find((y) => y.id === group.id).inputs[index])
                     }
                     helperText={
                       <>
@@ -453,9 +462,12 @@ function DataInputs({ dataSubmit }) {
                             <br />
                           </>
                         ) : null}
-                        {!areAllInputsNumbers &&
-                          !Number(group.inputs[index]) &&
-                          Number(group.inputs[index]) !== 0 &&
+                        {areAllInputsNumbers.length > 0 &&
+                          !areAllInputsNumbers
+                            .find((x) => x.id === set.id)
+                            .groups.find((y) => y.id === group.id).inputs[
+                            index
+                          ] &&
                           "Not a number"}
                       </>
                     }
