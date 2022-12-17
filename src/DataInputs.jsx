@@ -445,9 +445,11 @@ function DataInputs({ dataSubmit }) {
                             x.duplicates.includes(group.inputs[index])
                         )) ||
                       (areAllInputsNumbers.length > 0 &&
-                        !areAllInputsNumbers
-                          .find((x) => x.id === set.id)
-                          .groups.find((y) => y.id === group.id).inputs[index])
+                        areAllInputsNumbers
+                          ?.find((x) => x.id === set.id)
+                          ?.groups.find((y) => y.id === group.id)?.inputs[
+                          index
+                        ] === false)
                     }
                     helperText={
                       <>
@@ -463,11 +465,11 @@ function DataInputs({ dataSubmit }) {
                           </>
                         ) : null}
                         {areAllInputsNumbers.length > 0 &&
-                          !areAllInputsNumbers
-                            .find((x) => x.id === set.id)
-                            .groups.find((y) => y.id === group.id).inputs[
+                          areAllInputsNumbers
+                            ?.find((x) => x.id === set.id)
+                            ?.groups.find((y) => y.id === group.id)?.inputs[
                             index
-                          ] &&
+                          ] === false &&
                           "Not a number"}
                       </>
                     }
