@@ -12,9 +12,8 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useState } from "react";
 import styled from "styled-components";
-import { SketchPicker } from "react-color";
-import { ClickAwayListener } from "@mui/base";
 import { useEffect } from "react";
+import ColorPicker from "./ColorPicker";
 
 const StyledDataInputs = styled(Box)`
   grid-area: data-inputs;
@@ -26,20 +25,6 @@ const StyledDataInputs = styled(Box)`
   & > * {
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
-  }
-  & .color {
-    &-button {
-      background-color: black;
-      &:hover {
-        background-color: black;
-        opacity: 0.75;
-      }
-    }
-    &-picker {
-      position: absolute;
-      background-color: white;
-      z-index: 2;
-    }
   }
 `;
 
@@ -71,8 +56,6 @@ function DataInputs({ dataSubmit }) {
   const [expandedAccordions, setExpandedAccordions] = useState([0]);
 
   const [inputsWithSameValue, setInputsWithSameValue] = useState([]);
-
-  const [showColorPicker, setShowColorPicker] = useState(undefined);
 
   const findDuplicates = (array, index) => {
     let sortedArray = [...array].sort(
@@ -243,21 +226,13 @@ function DataInputs({ dataSubmit }) {
     }
   };
 
-  const handleColorButtonClick = (setID) => {
-    if (showColorPicker === setID) {
-      setShowColorPicker(null);
-    } else {
-      setShowColorPicker(setID);
-    }
-  };
-
   const handleColorPickerChange = (color, setID) => {
     setSetsInputs(
       setsInputs.map((set) => {
         if (set.id === setID) {
           return {
             ...set,
-            color: color.hex,
+            color: color,
           };
         } else {
           return set;
@@ -393,32 +368,21 @@ function DataInputs({ dataSubmit }) {
               onChange={(e) => handleSetNameChange(e, set.id)}
               value={set.name}
             />
-            <Box sx={{ position: "relative" }}>
-              <IconButton
-                variant="contained"
-                size="medium"
-                sx={{
-                  backgroundColor: set.color,
-                  "&:hover": { backgroundColor: set.color, opacity: 0.75 },
-                }}
-                onClick={() => handleColorButtonClick(set.id)}
+            <Box
+              sx={{
+                position: "relative",
+                display: "flex",
+                flexDirection: "row",
+              }}
+            >
+              <ColorPicker
+                color={set.color}
+                changeColor={(color) => handleColorPickerChange(color, set.id)}
               />
-              {showColorPicker === set.id && (
-                <ClickAwayListener
-                  onClickAway={() => setShowColorPicker(undefined)}
-                >
-                  <SketchPicker
-                    className="color-picker"
-                    color={set.color}
-                    onChange={(color, e) =>
-                      handleColorPickerChange(color, set.id)
-                    }
-                  />
-                </ClickAwayListener>
-              )}
               {set.id !== 0 && <Delete onClick={() => deleteSet(set.id)} />}
             </Box>
           </AccordionSummary>
+
           <AccordionDetails>
             {set.groups.map((group) => (
               <Box
