@@ -5,6 +5,7 @@ import {
   AccordionSummary,
   Box,
   Button,
+  ButtonGroup,
   IconButton,
   MenuItem,
   TextField,
@@ -40,6 +41,8 @@ function DataInputs({ dataSubmit }) {
   const [titleInput, setTitleInput] = useState("");
 
   const [axisInputs, setAxisInputs] = useState({ first: "", second: "" });
+
+  const [barColors, setBarColors] = useState(["#000"]);
 
   const [setsInputs, setSetsInputs] = useState([
     {
@@ -86,6 +89,12 @@ function DataInputs({ dataSubmit }) {
       ...axisInputs,
       second: e.target.value,
     });
+  };
+
+  const handleChangeBarColors = (newColor, index) => {
+    let newArray = [...barColors];
+    newArray[index] = newColor;
+    setBarColors(newArray);
   };
 
   const handleInputChange = (e, setID, groupID, inputID) => {
@@ -277,6 +286,7 @@ function DataInputs({ dataSubmit }) {
       dataSubmit({
         graphType,
         title: titleInput,
+        barColors,
         axis: axisInputs,
         sets: setsInputs,
       });
@@ -355,6 +365,23 @@ function DataInputs({ dataSubmit }) {
           value={axisInputs.second}
         />
       </Box>
+
+      {graphType === "bar" && (
+        <ButtonGroup>
+          {[...setsInputs]
+            .sort((a, b) => b.groups.length - a.groups.length)[0]
+            .groups.map((x, index) => index)
+            .map((x, index) => (
+              <ColorPicker
+                key={x}
+                color={barColors[index] ? barColors[index] : "#000"}
+                changeColor={(color) => handleChangeBarColors(color, index)}
+              >
+                {index + 1}
+              </ColorPicker>
+            ))}
+        </ButtonGroup>
+      )}
 
       {setsInputs.map((set) => (
         <Accordion key={set.id} expanded={expandedAccordions.includes(set.id)}>

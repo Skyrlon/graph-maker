@@ -202,7 +202,11 @@ export default function BarGraph({ data, sendData, graphData }) {
                   getPositionY(group.inputs[0]) -
                   graphData.axisMargin
                 }
-                fill={set.color}
+                fill={
+                  data.sets.every((set) => set.groups.length === 1)
+                    ? set.color
+                    : data.barColors[index]
+                }
               />
             ))}
           </g>
