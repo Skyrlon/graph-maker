@@ -37,13 +37,8 @@ function App() {
       </AppBar>
       <StyledBox>
         <DataInputs dataSubmit={handleDataSubmitted} />
-        {data && (
-          <>
-            <Graph data={data} sendSvgData={(x) => setSvgData(x)} />
-
-            <DownloadSection svgData={{ ...svgData, title: data.title }} />
-          </>
-        )}
+        <Graph data={data} sendSvgData={(x) => setSvgData(x)} />
+        <DownloadSection svgData={{ ...svgData, title: data?.title }} />
       </StyledBox>
     </div>
   );

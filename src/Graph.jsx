@@ -56,28 +56,30 @@ function Graph({ data, sendSvgData }) {
   return (
     <StyledGraph>
       <div className="container">
-        <svg
-          viewBox={`0 0 ${imageLength} ${imageLength}`}
-          width={imageLength}
-          height={imageLength}
-          xmlns="http://www.w3.org/2000/svg"
-          ref={handleSvg}
-        >
-          {data.graphType === "linear" && (
-            <LinearGraph
-              data={data}
-              sendSvgData={sendSvgData}
-              graphData={graphData}
-            />
-          )}
-          {data.graphType === "bar" && (
-            <BarGraph
-              data={data}
-              sendSvgData={sendSvgData}
-              graphData={graphData}
-            />
-          )}
-        </svg>
+        {data && (
+          <svg
+            viewBox={`0 0 ${imageLength} ${imageLength}`}
+            width={imageLength}
+            height={imageLength}
+            xmlns="http://www.w3.org/2000/svg"
+            ref={handleSvg}
+          >
+            {data.graphType === "linear" && (
+              <LinearGraph
+                data={data}
+                sendSvgData={sendSvgData}
+                graphData={graphData}
+              />
+            )}
+            {data.graphType === "bar" && (
+              <BarGraph
+                data={data}
+                sendSvgData={sendSvgData}
+                graphData={graphData}
+              />
+            )}
+          </svg>
+        )}
       </div>
     </StyledGraph>
   );

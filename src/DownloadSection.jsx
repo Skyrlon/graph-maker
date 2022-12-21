@@ -120,7 +120,11 @@ function DownloadSection({ svgData }) {
         ></TextField>
         <Typography>%</Typography>
       </Box>
-      <Button onClick={download}>Download</Button>
+
+      <Button disabled={!imgDataURL} onClick={download}>
+        Download
+      </Button>
+
       <Typography>≈{imgFileSize}</Typography>
 
       <canvas id="canvas" ref={canvasRef}></canvas>
