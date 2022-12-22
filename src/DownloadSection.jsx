@@ -1,4 +1,11 @@
-import { Button, MenuItem, Select, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  InputAdornment,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
 import styled from "styled-components";
 import { useRef, useState } from "react";
 import { useEffect } from "react";
@@ -107,7 +114,12 @@ function DownloadSection({ svgData }) {
         label="Image Size"
         value={imgSize}
         onChange={(e) => setImgSize(e.target.value)}
-      ></TextField>
+        InputProps={{
+          endAdornment: imgSize > 0 && (
+            <InputAdornment position="end">x {imgSize}px</InputAdornment>
+          ),
+        }}
+      />
       <Select value={imgType} onChange={(e) => setImgType(e.target.value)}>
         <MenuItem value={"png"}>PNG</MenuItem>
         <MenuItem value={"jpeg"}>JPEG</MenuItem>
