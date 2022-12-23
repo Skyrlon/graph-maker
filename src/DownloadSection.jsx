@@ -2,14 +2,12 @@ import {
   Button,
   InputAdornment,
   MenuItem,
-  Select,
   TextField,
   Typography,
 } from "@mui/material";
 import styled from "styled-components";
 import { useRef, useState } from "react";
 import { useEffect } from "react";
-import { Box } from "@mui/system";
 
 const StyledDownloadSection = styled.section`
   grid-area: save;
@@ -120,24 +118,30 @@ function DownloadSection({ svgData }) {
           ),
         }}
       />
-      <Select value={imgType} onChange={(e) => setImgType(e.target.value)}>
+      <TextField
+        select
+        label="Format"
+        value={imgType}
+        onChange={(e) => setImgType(e.target.value)}
+      >
         <MenuItem value={"png"}>PNG</MenuItem>
         <MenuItem value={"jpeg"}>JPEG</MenuItem>
         <MenuItem value={"bmp"}>BMP</MenuItem>
-      </Select>
-      <Box sx={{ display: "flex", flexDirection: "row" }}>
-        <TextField
-          value={imgQuality}
-          onChange={(e) => setImgQuality(e.target.value)}
-        ></TextField>
-        <Typography>%</Typography>
-      </Box>
+      </TextField>
+      <TextField
+        label="Quality"
+        value={imgQuality}
+        onChange={(e) => setImgQuality(e.target.value)}
+        InputProps={{
+          endAdornment: <InputAdornment position="end">%</InputAdornment>,
+        }}
+      />
 
       <Button disabled={!imgDataURL} onClick={download}>
         Download
       </Button>
 
-      <Typography>≈{imgFileSize}</Typography>
+      {imgFileSize > 0 && <Typography>≈{imgFileSize}</Typography>}
 
       <canvas id="canvas" ref={canvasRef}></canvas>
     </StyledDownloadSection>
