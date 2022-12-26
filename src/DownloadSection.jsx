@@ -15,6 +15,15 @@ const StyledDownloadSection = styled.section`
   position: relative;
   display: flex;
   flex-direction: row;
+  box-sizing: border-box;
+
+  @media (max-width: 767px) {
+    display: flex;
+    flex direction: row;
+    height: 100%;
+    box-sizing: border-box;
+    padding:10px;
+  }
   #canvas {
     position: absolute;
     width: 1px;

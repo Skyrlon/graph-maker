@@ -27,6 +27,11 @@ const StyledDataInputs = styled(Box)`
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
   }
+
+  @media (max-width: 767px) {
+    height: 100%;
+    flex-basis: 100%;
+  }
 `;
 
 function DataInputs({ dataSubmit }) {

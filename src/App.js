@@ -6,6 +6,17 @@ import { useState } from "react";
 import Graph from "./Graph";
 import DownloadSection from "./DownloadSection";
 
+const StyledApp = styled.div`
+  @media screen and (max-width: 767px) {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+`;
+
 const StyledBox = styled(Box)`
   display: grid;
   grid-template-columns: 75% 25%;
@@ -14,6 +25,12 @@ const StyledBox = styled(Box)`
   grid-template-areas:
     "graph data-inputs"
     "save data-inputs";
+
+  @media (max-width: 767px) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 function App() {
@@ -27,7 +44,7 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <StyledApp className="App">
       <AppBar component="nav" position="sticky">
         <Toolbar>
           <Typography variant="h6" component="div">
@@ -40,7 +57,7 @@ function App() {
         <Graph data={data} sendSvgData={(x) => setSvgData(x)} />
         <DownloadSection svgData={{ ...svgData, title: data?.title }} />
       </StyledBox>
-    </div>
+    </StyledApp>
   );
 }
 
