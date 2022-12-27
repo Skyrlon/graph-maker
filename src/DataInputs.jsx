@@ -23,14 +23,23 @@ const StyledDataInputs = styled(Box)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  & > * {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
+  & .scroller {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    height: 100%;
   }
 
   @media (max-width: 767px) {
     height: 100%;
-    flex-basis: 100%;
+    overflow: hidden;
+    & .scroller {
+      width: 99%;
+      height: 90%;
+      overflow-y: auto;
+    }
   }
 `;
 
@@ -330,180 +339,187 @@ function DataInputs({ dataSubmit }) {
 
   return (
     <StyledDataInputs>
-      <TextField
-        select
-        variant="outlined"
-        label="Graph type"
-        value={graphType}
-        onChange={(e) => setGraphType(e.target.value)}
-      >
-        {graphTypesList.map((graphTypeItem) => (
-          <MenuItem key={graphTypeItem} value={graphTypeItem}>
-            {graphTypeItem}
-          </MenuItem>
-        ))}
-      </TextField>
-
-      <TextField
-        label="Title"
-        variant="standard"
-        onChange={handleTitleInputChange}
-        value={titleInput}
-      />
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
+      <div className="scroller">
         <TextField
-          label="x-axis"
-          variant="standard"
-          onChange={handleFirstAxisInputChange}
-          value={axisInputs.first}
-        />
+          select
+          variant="outlined"
+          label="Graph type"
+          value={graphType}
+          onChange={(e) => setGraphType(e.target.value)}
+        >
+          {graphTypesList.map((graphTypeItem) => (
+            <MenuItem key={graphTypeItem} value={graphTypeItem}>
+              {graphTypeItem}
+            </MenuItem>
+          ))}
+        </TextField>
+
         <TextField
-          label="y-axis"
+          label="Title"
           variant="standard"
-          onChange={handleSecondAxisInputChange}
-          value={axisInputs.second}
+          onChange={handleTitleInputChange}
+          value={titleInput}
         />
-      </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <TextField
+            label="x-axis"
+            variant="standard"
+            onChange={handleFirstAxisInputChange}
+            value={axisInputs.first}
+          />
+          <TextField
+            label="y-axis"
+            variant="standard"
+            onChange={handleSecondAxisInputChange}
+            value={axisInputs.second}
+          />
+        </Box>
 
-      {graphType === "bar" && (
-        <ButtonGroup>
-          {[...setsInputs]
-            .sort((a, b) => b.groups.length - a.groups.length)[0]
-            .groups.map((x, index) => index)
-            .map((x, index) => (
-              <ColorPicker
-                key={x}
-                color={barColors[index] ? barColors[index] : "#000"}
-                changeColor={(color) => handleChangeBarColors(color, index)}
-              >
-                {index + 1}
-              </ColorPicker>
-            ))}
-        </ButtonGroup>
-      )}
+        {graphType === "bar" && (
+          <ButtonGroup>
+            {[...setsInputs]
+              .sort((a, b) => b.groups.length - a.groups.length)[0]
+              .groups.map((x, index) => index)
+              .map((x, index) => (
+                <ColorPicker
+                  key={x}
+                  color={barColors[index] ? barColors[index] : "#000"}
+                  changeColor={(color) => handleChangeBarColors(color, index)}
+                >
+                  {index + 1}
+                </ColorPicker>
+              ))}
+          </ButtonGroup>
+        )}
 
-      {setsInputs.map((set) => (
-        <Accordion key={set.id} expanded={expandedAccordions.includes(set.id)}>
-          <AccordionSummary
-            expandIcon={
-              <ExpandMoreIcon onClick={() => toggleAcordion(set.id)} />
-            }
+        {setsInputs.map((set) => (
+          <Accordion
+            key={set.id}
+            expanded={expandedAccordions.includes(set.id)}
           >
-            <TextField
-              variant="standard"
-              onChange={(e) => handleSetNameChange(e, set.id)}
-              value={set.name}
-            />
-            <Box
-              sx={{
-                position: "relative",
-                display: "flex",
-                flexDirection: "row",
-              }}
+            <AccordionSummary
+              expandIcon={
+                <ExpandMoreIcon onClick={() => toggleAcordion(set.id)} />
+              }
             >
-              <ColorPicker
-                color={set.color}
-                changeColor={(color) => handleColorPickerChange(color, set.id)}
+              <TextField
+                variant="standard"
+                onChange={(e) => handleSetNameChange(e, set.id)}
+                value={set.name}
               />
-              {set.id !== 0 && <Delete onClick={() => deleteSet(set.id)} />}
-            </Box>
-          </AccordionSummary>
-
-          <AccordionDetails>
-            {set.groups.map((group) => (
               <Box
-                key={group.id}
                 sx={{
+                  position: "relative",
                   display: "flex",
                   flexDirection: "row",
-                  justifyContent: "space-between",
                 }}
               >
-                {group.inputs.map((input, index) => (
-                  <TextField
-                    required
-                    key={index}
-                    value={group.inputs[index]}
-                    onChange={(e) =>
-                      handleInputChange(e, set.id, group.id, index)
-                    }
-                    error={
-                      (index === 0 &&
-                        !!inputsWithSameValue.some(
-                          (x) =>
-                            x.id === set.id &&
-                            x.duplicates.includes(group.inputs[index])
-                        )) ||
-                      (areAllInputsNumbers.length > 0 &&
-                        areAllInputsNumbers
-                          ?.find((x) => x.id === set.id)
-                          ?.groups.find((y) => y.id === group.id)?.inputs[
-                          index
-                        ] === false)
-                    }
-                    helperText={
-                      <>
-                        {index === 0 &&
-                        !!inputsWithSameValue.some(
-                          (x) =>
-                            x.id === set.id &&
-                            x.duplicates.includes(group.inputs[index])
-                        ) ? (
-                          <>
-                            {sameValueErrorMessage}
-                            <br />
-                          </>
-                        ) : null}
-                        {areAllInputsNumbers.length > 0 &&
+                <ColorPicker
+                  color={set.color}
+                  changeColor={(color) =>
+                    handleColorPickerChange(color, set.id)
+                  }
+                />
+                {set.id !== 0 && <Delete onClick={() => deleteSet(set.id)} />}
+              </Box>
+            </AccordionSummary>
+
+            <AccordionDetails>
+              {set.groups.map((group) => (
+                <Box
+                  key={group.id}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  {group.inputs.map((input, index) => (
+                    <TextField
+                      required
+                      key={index}
+                      value={group.inputs[index]}
+                      onChange={(e) =>
+                        handleInputChange(e, set.id, group.id, index)
+                      }
+                      error={
+                        (index === 0 &&
+                          !!inputsWithSameValue.some(
+                            (x) =>
+                              x.id === set.id &&
+                              x.duplicates.includes(group.inputs[index])
+                          )) ||
+                        (areAllInputsNumbers.length > 0 &&
                           areAllInputsNumbers
                             ?.find((x) => x.id === set.id)
                             ?.groups.find((y) => y.id === group.id)?.inputs[
                             index
-                          ] === false &&
-                          "Not a number"}
-                      </>
-                    }
-                  />
-                ))}
-                {!(
-                  group.id === 0 ||
-                  (graphType === "linear" && group.id === 1)
-                ) && (
-                  <IconButton onClick={() => deleteGroup(set.id, group.id)}>
-                    <Delete />
-                  </IconButton>
-                )}
-              </Box>
-            ))}
-          </AccordionDetails>
+                          ] === false)
+                      }
+                      helperText={
+                        <>
+                          {index === 0 &&
+                          !!inputsWithSameValue.some(
+                            (x) =>
+                              x.id === set.id &&
+                              x.duplicates.includes(group.inputs[index])
+                          ) ? (
+                            <>
+                              {sameValueErrorMessage}
+                              <br />
+                            </>
+                          ) : null}
+                          {areAllInputsNumbers.length > 0 &&
+                            areAllInputsNumbers
+                              ?.find((x) => x.id === set.id)
+                              ?.groups.find((y) => y.id === group.id)?.inputs[
+                              index
+                            ] === false &&
+                            "Not a number"}
+                        </>
+                      }
+                    />
+                  ))}
+                  {!(
+                    group.id === 0 ||
+                    (graphType === "linear" && group.id === 1)
+                  ) && (
+                    <IconButton onClick={() => deleteGroup(set.id, group.id)}>
+                      <Delete />
+                    </IconButton>
+                  )}
+                </Box>
+              ))}
+            </AccordionDetails>
 
-          <IconButton
-            onClick={() => addGroup(set.id)}
-            sx={{ width: "2rem", height: "2rem" }}
-          >
-            <Add />
-          </IconButton>
-        </Accordion>
-      ))}
+            <IconButton
+              onClick={() => addGroup(set.id)}
+              sx={{ width: "2rem", height: "2rem" }}
+            >
+              <Add />
+            </IconButton>
+          </Accordion>
+        ))}
 
-      <Button onClick={addSet}>Add new set</Button>
+        <Button onClick={addSet}>Add new set</Button>
 
-      <Button
-        disabled={setsInputs.some((set) =>
-          set.groups.some((group) =>
-            group.inputs.some((input) => input.trim().length === 0)
-          )
-        )}
-        onClick={handleSubmit}
-      >
-        Submit
-      </Button>
+        <Button
+          disabled={setsInputs.some((set) =>
+            set.groups.some((group) =>
+              group.inputs.some((input) => input.trim().length === 0)
+            )
+          )}
+          onClick={handleSubmit}
+        >
+          Submit
+        </Button>
+      </div>
     </StyledDataInputs>
   );
 }

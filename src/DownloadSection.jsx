@@ -24,6 +24,7 @@ const StyledDownloadSection = styled.section`
     box-sizing: border-box;
     padding:10px;
   }
+
   #canvas {
     position: absolute;
     width: 1px;

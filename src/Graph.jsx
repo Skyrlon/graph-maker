@@ -9,10 +9,12 @@ const StyledGraph = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  .container {
+
+  & .container {
     width: 50%;
   }
-  svg {
+
+  & svg {
     position: relative;
     width: 100%;
     height: 100%;
