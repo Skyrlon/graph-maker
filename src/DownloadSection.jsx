@@ -20,7 +20,7 @@ const StyledDownloadSection = styled.section`
   @media (max-width: 767px) {
     display: flex;
     flex direction: row;
-    height: 100%;
+    height: 33%;
     box-sizing: border-box;
     padding:10px;
   }

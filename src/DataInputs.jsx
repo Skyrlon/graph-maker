@@ -33,11 +33,11 @@ const StyledDataInputs = styled(Box)`
   }
 
   @media (max-width: 767px) {
-    height: 100%;
+    height: 33%;
     overflow: hidden;
     & .scroller {
       width: 99%;
-      height: 90%;
+      height: 50%;
       overflow-y: auto;
     }
   }
@@ -339,65 +339,65 @@ function DataInputs({ dataSubmit }) {
 
   return (
     <StyledDataInputs>
-      <div className="scroller">
-        <TextField
-          select
-          variant="outlined"
-          label="Graph type"
-          value={graphType}
-          onChange={(e) => setGraphType(e.target.value)}
-        >
-          {graphTypesList.map((graphTypeItem) => (
-            <MenuItem key={graphTypeItem} value={graphTypeItem}>
-              {graphTypeItem}
-            </MenuItem>
-          ))}
-        </TextField>
+      <TextField
+        select
+        variant="outlined"
+        label="Graph type"
+        value={graphType}
+        onChange={(e) => setGraphType(e.target.value)}
+      >
+        {graphTypesList.map((graphTypeItem) => (
+          <MenuItem key={graphTypeItem} value={graphTypeItem}>
+            {graphTypeItem}
+          </MenuItem>
+        ))}
+      </TextField>
 
+      <TextField
+        label="Title"
+        variant="standard"
+        onChange={handleTitleInputChange}
+        value={titleInput}
+      />
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
         <TextField
-          label="Title"
+          label="x-axis"
           variant="standard"
-          onChange={handleTitleInputChange}
-          value={titleInput}
+          onChange={handleFirstAxisInputChange}
+          value={axisInputs.first}
         />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <TextField
-            label="x-axis"
-            variant="standard"
-            onChange={handleFirstAxisInputChange}
-            value={axisInputs.first}
-          />
-          <TextField
-            label="y-axis"
-            variant="standard"
-            onChange={handleSecondAxisInputChange}
-            value={axisInputs.second}
-          />
-        </Box>
+        <TextField
+          label="y-axis"
+          variant="standard"
+          onChange={handleSecondAxisInputChange}
+          value={axisInputs.second}
+        />
+      </Box>
 
-        {graphType === "bar" && (
-          <ButtonGroup>
-            {[...setsInputs]
-              .sort((a, b) => b.groups.length - a.groups.length)[0]
-              .groups.map((x, index) => index)
-              .map((x, index) => (
-                <ColorPicker
-                  key={x}
-                  color={barColors[index] ? barColors[index] : "#000"}
-                  changeColor={(color) => handleChangeBarColors(color, index)}
-                >
-                  {index + 1}
-                </ColorPicker>
-              ))}
-          </ButtonGroup>
-        )}
+      {graphType === "bar" && (
+        <ButtonGroup>
+          {[...setsInputs]
+            .sort((a, b) => b.groups.length - a.groups.length)[0]
+            .groups.map((x, index) => index)
+            .map((x, index) => (
+              <ColorPicker
+                key={x}
+                color={barColors[index] ? barColors[index] : "#000"}
+                changeColor={(color) => handleChangeBarColors(color, index)}
+              >
+                {index + 1}
+              </ColorPicker>
+            ))}
+        </ButtonGroup>
+      )}
 
+      <div className="scroller">
         {setsInputs.map((set) => (
           <Accordion
             key={set.id}
@@ -506,20 +506,18 @@ function DataInputs({ dataSubmit }) {
             </IconButton>
           </Accordion>
         ))}
-
         <Button onClick={addSet}>Add new set</Button>
-
-        <Button
-          disabled={setsInputs.some((set) =>
-            set.groups.some((group) =>
-              group.inputs.some((input) => input.trim().length === 0)
-            )
-          )}
-          onClick={handleSubmit}
-        >
-          Submit
-        </Button>
       </div>
+      <Button
+        disabled={setsInputs.some((set) =>
+          set.groups.some((group) =>
+            group.inputs.some((input) => input.trim().length === 0)
+          )
+        )}
+        onClick={handleSubmit}
+      >
+        Submit
+      </Button>
     </StyledDataInputs>
   );
 }
