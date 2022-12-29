@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   InputAdornment,
   MenuItem,
@@ -19,10 +20,20 @@ const StyledDownloadSection = styled.section`
 
   @media (max-width: 767px) {
     display: flex;
-    flex direction: row;
+    flex-direction: column;
+    justify-content: space-around;
+    align-content: center;
     height: 33%;
     box-sizing: border-box;
-    padding:10px;
+    padding: 5%;
+
+    & .download-inputs {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-content: center;
+      height: 50%;
+    }
   }
 
   #canvas {
@@ -118,34 +129,36 @@ function DownloadSection({ svgData }) {
 
   return (
     <StyledDownloadSection>
-      <TextField
-        label="Image Size"
-        value={imgSize}
-        onChange={(e) => setImgSize(e.target.value)}
-        InputProps={{
-          endAdornment: imgSize > 0 && (
-            <InputAdornment position="end">x {imgSize}px</InputAdornment>
-          ),
-        }}
-      />
-      <TextField
-        select
-        label="Format"
-        value={imgType}
-        onChange={(e) => setImgType(e.target.value)}
-      >
-        <MenuItem value={"png"}>PNG</MenuItem>
-        <MenuItem value={"jpeg"}>JPEG</MenuItem>
-        <MenuItem value={"bmp"}>BMP</MenuItem>
-      </TextField>
-      <TextField
-        label="Quality"
-        value={imgQuality}
-        onChange={(e) => setImgQuality(e.target.value)}
-        InputProps={{
-          endAdornment: <InputAdornment position="end">%</InputAdornment>,
-        }}
-      />
+      <Box className="download-inputs">
+        <TextField
+          label="Image Size"
+          value={imgSize}
+          onChange={(e) => setImgSize(e.target.value)}
+          InputProps={{
+            endAdornment: imgSize > 0 && (
+              <InputAdornment position="end">x {imgSize}px</InputAdornment>
+            ),
+          }}
+        />
+        <TextField
+          select
+          label="Format"
+          value={imgType}
+          onChange={(e) => setImgType(e.target.value)}
+        >
+          <MenuItem value={"png"}>PNG</MenuItem>
+          <MenuItem value={"jpeg"}>JPEG</MenuItem>
+          <MenuItem value={"bmp"}>BMP</MenuItem>
+        </TextField>
+        <TextField
+          label="Quality"
+          value={imgQuality}
+          onChange={(e) => setImgQuality(e.target.value)}
+          InputProps={{
+            endAdornment: <InputAdornment position="end">%</InputAdornment>,
+          }}
+        />
+      </Box>
 
       <Button disabled={!imgDataURL} onClick={download}>
         Download

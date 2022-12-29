@@ -44,10 +44,11 @@ const StyledBox = styled(Box)`
         transform: translateY(calc(-33% - 56px));
       }
       &.download {
-        transform: translateY(-66%);
+        transform: translateY(calc(-66% - 56px));
       }
       &-button {
-        &-top {z-index:2;
+        &-top {
+          z-index: 2;
           position: absolute;
           left: 0;
           top: 56px;
