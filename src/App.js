@@ -28,6 +28,17 @@ const StyledBox = styled(Box)`
       "save data-inputs";
   }
 
+  .carousel {
+    &-button {
+      &-top {
+        display: none;
+      }
+      &-bottom {
+        display: none;
+      }
+    }
+  }
+
   @media (max-width: 767px) {
     display: block;
     width: 100%;
@@ -48,12 +59,14 @@ const StyledBox = styled(Box)`
       }
       &-button {
         &-top {
+          display: block;
           z-index: 2;
           position: absolute;
           left: 0;
           top: 56px;
         }
         &-bottom {
+          display: block;
           position: absolute;
           left: 0;
           bottom: 0;
