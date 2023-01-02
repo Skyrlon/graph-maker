@@ -18,10 +18,12 @@ const StyledApp = styled.div`
 `;
 
 const StyledBox = styled(Box)`
+  height: calc(100vh - 64px);
   & .carousel {
+    height: 100%;
     display: grid;
     grid-template-columns: 75% 25%;
-    grid-template-rows: 60fr 11fr;
+    grid-template-rows: 80% 20%;
     gap: 0px 0px;
     grid-template-areas:
       "graph data-inputs"
