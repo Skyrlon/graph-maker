@@ -160,7 +160,10 @@ function DownloadSection({ svgData }) {
         />
       </Box>
 
-      <Button disabled={!imgDataURL} onClick={download}>
+      <Button
+        disabled={!imgDataURL || imgFileSize === "0 o"}
+        onClick={download}
+      >
         Download
       </Button>
 
