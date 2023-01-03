@@ -50,7 +50,7 @@ function DownloadSection({ svgData }) {
   const [imgType, setImgType] = useState("png");
   const [fileName, setFileName] = useState("");
   const [imgDataURL, setImgDataUrl] = useState("");
-  const [imgFileSize, setImgFileSize] = useState("");
+  const [imgFileSize, setImgFileSize] = useState("0 o");
   const [imgQuality, setImgQuality] = useState(100);
 
   const drawInlineSVG = () => {
@@ -99,7 +99,7 @@ function DownloadSection({ svgData }) {
         setImgFileSize(
           `${Math.round((fileSize / Math.pow(1024, power - 1)) * 100) / 100} ${
             symbolArray[power - 1]
-          }o`
+          } o`
         );
       }
     };
@@ -164,7 +164,7 @@ function DownloadSection({ svgData }) {
         Download
       </Button>
 
-      {imgFileSize > 0 && <Typography>≈{imgFileSize}</Typography>}
+      {imgFileSize !== "0 o" && <Typography>≈{imgFileSize}</Typography>}
 
       <canvas id="canvas" ref={canvasRef}></canvas>
     </StyledDownloadSection>
