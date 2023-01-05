@@ -29,7 +29,8 @@ const StyledDataInputs = styled(Box)`
     align-items: center;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
-    height: 100%;
+    height: 75%;
+    overflow-y: auto;
   }
 
   @media (max-width: 767px) {
