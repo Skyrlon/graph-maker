@@ -15,8 +15,18 @@ const StyledDownloadSection = styled.section`
   border: 1px solid;
   position: relative;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  justify-content: space-around;
   box-sizing: border-box;
+  padding: 2%;
+
+  & .download-inputs {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-content: center;
+  }
 
   @media (max-width: 767px) {
     display: flex;
@@ -99,7 +109,7 @@ function DownloadSection({ svgData }) {
         setImgFileSize(
           `${Math.round((fileSize / Math.pow(1024, power - 1)) * 100) / 100} ${
             symbolArray[power - 1]
-          } o`
+          }o`
         );
       }
     };
@@ -160,14 +170,14 @@ function DownloadSection({ svgData }) {
         />
       </Box>
 
+      {imgFileSize !== "0 o" && <Typography>≈ {imgFileSize}</Typography>}
+
       <Button
         disabled={!imgDataURL || imgFileSize === "0 o"}
         onClick={download}
       >
         Download
       </Button>
-
-      {imgFileSize !== "0 o" && <Typography>≈{imgFileSize}</Typography>}
 
       <canvas id="canvas" ref={canvasRef}></canvas>
     </StyledDownloadSection>

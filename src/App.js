@@ -23,7 +23,7 @@ const StyledBox = styled(Box)`
     height: 100%;
     display: grid;
     grid-template-columns: 75% 25%;
-    grid-template-rows: 80% 20%;
+    grid-template-rows: 75% 25%;
     gap: 0px 0px;
     grid-template-areas:
       "graph data-inputs"
