@@ -1,29 +1,30 @@
 import styled from "styled-components";
 import LinearGraph from "./LinearGraph";
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import BarGraph from "./BarGraph";
 
 const StyledGraph = styled.div`
   grid-area: graph;
+  position: relative;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
 
   & .container {
-    width: 50%;
-  }
-
-  & svg {
-    position: relative;
     width: 100%;
-    height: 100%;
   }
 
   @media (max-width: 767px) {
     height: 33%;
     width: 100%;
   }
+`;
+
+const StyledSvg = styled.svg.attrs((props) => ({
+  style: { width: props.svgSize, height: props.svgSize },
+}))`
+  position: relative;
 `;
 
 function Graph({ data, sendSvgData }) {
@@ -60,11 +61,37 @@ function Graph({ data, sendSvgData }) {
     []
   );
 
+  const [sectionWidth, setContainerWidth] = useState();
+  const [sectionHeight, setContainerHeight] = useState();
+
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    resizeObserver.observe(sectionRef.current);
+    return function cleanup() {
+      resizeObserver.disconnect();
+    };
+  });
+
+  const handleElementResized = () => {
+    if (sectionRef.current.offsetWidth !== sectionWidth) {
+      setContainerWidth(sectionRef.current.offsetWidth);
+    }
+    if (sectionRef.current.offsetHeight !== sectionHeight) {
+      setContainerHeight(sectionRef.current.offsetHeight);
+    }
+  };
+
+  const resizeObserver = new ResizeObserver(handleElementResized);
+
   return (
-    <StyledGraph>
+    <StyledGraph ref={sectionRef}>
       <div className="container">
         {data && (
-          <svg
+          <StyledSvg
+            svgSize={
+              sectionWidth > sectionHeight ? sectionHeight : sectionWidth
+            }
             viewBox={`0 0 ${imageLength} ${imageLength}`}
             width={imageLength}
             height={imageLength}
@@ -85,7 +112,7 @@ function Graph({ data, sendSvgData }) {
                 graphData={graphData}
               />
             )}
-          </svg>
+          </StyledSvg>
         )}
       </div>
     </StyledGraph>
