@@ -9,6 +9,7 @@ import {
   IconButton,
   MenuItem,
   TextField,
+  Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useState } from "react";
@@ -382,20 +383,36 @@ function DataInputs({ dataSubmit }) {
       </Box>
 
       {graphType === "bar" && (
-        <ButtonGroup>
-          {[...setsInputs]
-            .sort((a, b) => b.groups.length - a.groups.length)[0]
-            .groups.map((x, index) => index)
-            .map((x, index) => (
-              <ColorPicker
-                key={x}
-                color={barColors[index] ? barColors[index] : "#000"}
-                changeColor={(color) => handleChangeBarColors(color, index)}
-              >
-                {index + 1}
-              </ColorPicker>
-            ))}
-        </ButtonGroup>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            width: "20rem",
+            marginBottom: "1rem",
+          }}
+        >
+          <Typography sx={{ marginRight: "1rem" }}>Bars Colors</Typography>
+          <ButtonGroup
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "wrap",
+            }}
+          >
+            {[...setsInputs]
+              .sort((a, b) => b.groups.length - a.groups.length)[0]
+              .groups.map((x, index) => index)
+              .map((x, index) => (
+                <ColorPicker
+                  key={x}
+                  color={barColors[index] ? barColors[index] : "#000"}
+                  changeColor={(color) => handleChangeBarColors(color, index)}
+                >
+                  {index + 1}
+                </ColorPicker>
+              ))}
+          </ButtonGroup>
+        </Box>
       )}
 
       <div className="scroller">
