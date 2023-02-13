@@ -60,17 +60,7 @@ function DataInputs({ dataSubmit }) {
 
   const [barColors, setBarColors] = useState(["#000"]);
 
-  const [setsInputs, setSetsInputs] = useState([
-    {
-      id: 0,
-      name: "Set 1",
-      color: "#000000",
-      groups: [
-        { id: 0, inputs: ["", ""] },
-        { id: 1, inputs: ["", ""] },
-      ],
-    },
-  ]);
+  const [setsInputs, setSetsInputs] = useState([]);
 
   const [expandedAccordions, setExpandedAccordions] = useState([0]);
 
@@ -198,7 +188,10 @@ function DataInputs({ dataSubmit }) {
       setSetsInputs([
         ...setsInputs,
         {
-          id: setsInputs[setsInputs.length - 1].id + 1,
+          id:
+            setsInputs.length > 0
+              ? setsInputs[setsInputs.length - 1].id + 1
+              : 0,
           name: "New Set",
           color: "#000000",
           groups: [
@@ -211,7 +204,10 @@ function DataInputs({ dataSubmit }) {
       setSetsInputs([
         ...setsInputs,
         {
-          id: setsInputs[setsInputs.length - 1].id + 1,
+          id:
+            setsInputs.length > 0
+              ? setsInputs[setsInputs.length - 1].id + 1
+              : 0,
           name: "New Set",
           color: "#000000",
           groups: [{ id: 0, inputs: [""] }],
@@ -220,7 +216,7 @@ function DataInputs({ dataSubmit }) {
     }
     setExpandedAccordions([
       ...expandedAccordions,
-      setsInputs[setsInputs.length - 1].id + 1,
+      setsInputs.length > 0 ? setsInputs[setsInputs.length - 1].id + 1 : 0,
     ]);
   };
 
@@ -314,30 +310,14 @@ function DataInputs({ dataSubmit }) {
     setInputsWithSameValue(sameValues);
   };
 
-  useEffect(() => {
-    if (graphType === "linear") {
-      setSetsInputs([
-        {
-          id: 0,
-          name: "Set 1",
-          color: "#000000",
-          groups: [
-            { id: 0, inputs: ["", ""] },
-            { id: 1, inputs: ["", ""] },
-          ],
-        },
-      ]);
-    } else if (graphType === "bar") {
-      setSetsInputs([
-        {
-          id: 0,
-          name: "Set 1",
-          color: "#000000",
-          groups: [{ id: 0, inputs: [""] }],
-        },
-      ]);
-    }
-  }, [graphType]);
+  useEffect(
+    () => {
+      setsInputs.length = 0;
+      addSet();
+    },
+    // eslint-disable-next-line
+    [graphType]
+  );
 
   return (
     <StyledDataInputs>
