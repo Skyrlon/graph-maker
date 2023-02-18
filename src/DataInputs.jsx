@@ -192,7 +192,7 @@ function DataInputs({ dataSubmit }) {
             setsInputs.length > 0
               ? setsInputs[setsInputs.length - 1].id + 1
               : 0,
-          name: "New Set",
+          name: "New Line",
           color: "#000000",
           groups: [
             { id: 0, inputs: ["", ""] },
@@ -208,7 +208,7 @@ function DataInputs({ dataSubmit }) {
             setsInputs.length > 0
               ? setsInputs[setsInputs.length - 1].id + 1
               : 0,
-          name: "New Set",
+          name: "New Bar",
           color: "#000000",
           groups: [{ id: 0, inputs: [""] }],
         },
