@@ -504,7 +504,10 @@ function DataInputs({ dataSubmit }) {
             </IconButton>
           </Accordion>
         ))}
-        <Button onClick={addSet}>Add new set</Button>
+        <Button onClick={addSet}>
+          Add new{" "}
+          {(graphType === "linear" && "line") || (graphType === "bar" && "bar")}
+        </Button>
       </div>
       <Button
         disabled={setsInputs.some((set) =>
