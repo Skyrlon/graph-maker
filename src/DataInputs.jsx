@@ -50,7 +50,10 @@ function DataInputs({ dataSubmit }) {
 
   const [areAllInputsNumbers, setAreAllInputsNumbers] = useState([]);
 
-  const graphTypesList = ["linear", "bar"];
+  const graphTypesList = [
+    { name: "linear", setName: "line" },
+    { name: "bar", setName: "bar" },
+  ];
 
   const [graphType, setGraphType] = useState("linear");
 
@@ -329,8 +332,8 @@ function DataInputs({ dataSubmit }) {
         onChange={(e) => setGraphType(e.target.value)}
       >
         {graphTypesList.map((graphTypeItem) => (
-          <MenuItem key={graphTypeItem} value={graphTypeItem}>
-            {graphTypeItem}
+          <MenuItem key={graphTypeItem.name} value={graphTypeItem.name}>
+            {graphTypeItem.name}
           </MenuItem>
         ))}
       </TextField>
@@ -505,8 +508,7 @@ function DataInputs({ dataSubmit }) {
           </Accordion>
         ))}
         <Button onClick={addSet}>
-          Add new{" "}
-          {(graphType === "linear" && "line") || (graphType === "bar" && "bar")}
+          Add new {graphTypesList.find((x) => x.name === graphType).setName}
         </Button>
       </div>
       <Button
