@@ -53,6 +53,7 @@ function DataInputs({ dataSubmit }) {
   const graphTypesList = [
     { name: "linear", setName: "line" },
     { name: "bar", setName: "bar" },
+    { name: "circular", setName: "slice" },
   ];
 
   const [graphType, setGraphType] = useState("linear");
@@ -187,6 +188,9 @@ function DataInputs({ dataSubmit }) {
   };
 
   const addSet = () => {
+    const setName = `New ${
+      graphTypesList.find((x) => x.name === graphType).setName
+    }`;
     if (graphType === "linear") {
       setSetsInputs([
         ...setsInputs,
@@ -195,7 +199,7 @@ function DataInputs({ dataSubmit }) {
             setsInputs.length > 0
               ? setsInputs[setsInputs.length - 1].id + 1
               : 0,
-          name: "New Line",
+          name: setName,
           color: "#000000",
           groups: [
             { id: 0, inputs: ["", ""] },
@@ -203,7 +207,7 @@ function DataInputs({ dataSubmit }) {
           ],
         },
       ]);
-    } else if (graphType === "bar") {
+    } else if (graphType === "bar" || graphType === "circular") {
       setSetsInputs([
         ...setsInputs,
         {
@@ -211,7 +215,7 @@ function DataInputs({ dataSubmit }) {
             setsInputs.length > 0
               ? setsInputs[setsInputs.length - 1].id + 1
               : 0,
-          name: "New Bar",
+          name: setName,
           color: "#000000",
           groups: [{ id: 0, inputs: [""] }],
         },
@@ -344,26 +348,28 @@ function DataInputs({ dataSubmit }) {
         onChange={handleTitleInputChange}
         value={titleInput}
       />
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <TextField
-          label="x-axis"
-          variant="standard"
-          onChange={handleFirstAxisInputChange}
-          value={axisInputs.first}
-        />
-        <TextField
-          label="y-axis"
-          variant="standard"
-          onChange={handleSecondAxisInputChange}
-          value={axisInputs.second}
-        />
-      </Box>
+      {graphType !== "circular" && (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <TextField
+            label="x-axis"
+            variant="standard"
+            onChange={handleFirstAxisInputChange}
+            value={axisInputs.first}
+          />
+          <TextField
+            label="y-axis"
+            variant="standard"
+            onChange={handleSecondAxisInputChange}
+            value={axisInputs.second}
+          />
+        </Box>
+      )}
 
       {graphType === "bar" && (
         <Box
@@ -499,12 +505,14 @@ function DataInputs({ dataSubmit }) {
               ))}
             </AccordionDetails>
 
-            <IconButton
-              onClick={() => addGroup(set.id)}
-              sx={{ width: "2rem", height: "2rem" }}
-            >
-              <Add />
-            </IconButton>
+            {graphType !== "circular" && (
+              <IconButton
+                onClick={() => addGroup(set.id)}
+                sx={{ width: "2rem", height: "2rem" }}
+              >
+                <Add />
+              </IconButton>
+            )}
           </Accordion>
         ))}
         <Button onClick={addSet}>
