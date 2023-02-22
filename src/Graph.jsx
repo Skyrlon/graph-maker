@@ -2,6 +2,7 @@ import styled from "styled-components";
 import LinearGraph from "./LinearGraph";
 import { useCallback, useEffect, useRef, useState } from "react";
 import BarGraph from "./BarGraph";
+import CircularGraph from "./CircularGraph";
 
 const StyledGraph = styled.div`
   grid-area: graph;
@@ -107,6 +108,13 @@ function Graph({ data, sendSvgData }) {
             )}
             {data.graphType === "bar" && (
               <BarGraph
+                data={data}
+                sendSvgData={sendSvgData}
+                graphData={graphData}
+              />
+            )}
+            {data.graphType === "circular" && (
+              <CircularGraph
                 data={data}
                 sendSvgData={sendSvgData}
                 graphData={graphData}
