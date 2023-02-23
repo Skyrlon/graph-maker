@@ -16,6 +16,9 @@ export default function CircularGraph({ data, graphData }) {
 
     const d = [
       "M",
+      x,
+      y,
+      "L",
       start.x,
       start.y,
       "A",
@@ -26,13 +29,16 @@ export default function CircularGraph({ data, graphData }) {
       0,
       end.x,
       end.y,
+      "L",
+      x,
+      y,
     ].join(" ");
 
     return d;
   };
 
   const calculateAngle = (number, total) => {
-    return (number * 360) / total;
+    return (number * (360 - 0.00001)) / total;
   };
 
   return (
@@ -40,9 +46,7 @@ export default function CircularGraph({ data, graphData }) {
     data.sets.map((set, index) => (
       <path
         key={set.id}
-        fill="none"
-        stroke={set.color}
-        strokeWidth="20"
+        fill={set.color}
         d={describeArc(
           graphData.imageLength / 2,
           graphData.imageLength / 2,
