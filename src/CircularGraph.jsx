@@ -37,6 +37,25 @@ export default function CircularGraph({ data, graphData }) {
     return d;
   };
 
+  const getSlicePosition = (number, index) => {
+    const previousSlices =
+      index > 0
+        ? Number(
+            data.sets
+              .slice(0, index)
+              .reduce((a, b) => Number(a) + Number(b.groups[0].inputs[0]), 0)
+          )
+        : 0;
+    const total = data.sets.reduce(
+      (a, b) => Number(a) + Number(b.groups[0].inputs[0]),
+      0
+    );
+    return {
+      start: calculateAngle(previousSlices, total),
+      end: calculateAngle(previousSlices + Number(number), total),
+    };
+  };
+
   const calculateAngle = (number, total) => {
     return (number * (360 - 0.00001)) / total;
   };
@@ -51,45 +70,8 @@ export default function CircularGraph({ data, graphData }) {
           graphData.imageLength / 2,
           graphData.imageLength / 2,
           (graphData.imageLength - graphData.axisMargin) / 2,
-          index > 0
-            ? calculateAngle(
-                Number(
-                  data.sets
-                    .slice(0, index)
-                    .reduce(
-                      (a, b) => Number(a) + Number(b.groups[0].inputs[0]),
-                      0
-                    )
-                ) || 0,
-                data.sets.reduce(
-                  (a, b) => Number(a) + Number(b.groups[0].inputs[0]),
-                  0
-                )
-              )
-            : 0,
-          (index > 0
-            ? calculateAngle(
-                Number(
-                  data.sets
-                    .slice(0, index)
-                    .reduce(
-                      (a, b) => Number(a) + Number(b.groups[0].inputs[0]),
-                      0
-                    )
-                ) || 0,
-                data.sets.reduce(
-                  (a, b) => Number(a) + Number(b.groups[0].inputs[0]),
-                  0
-                )
-              )
-            : 0) +
-            calculateAngle(
-              Number(set.groups[0].inputs[0]),
-              data.sets.reduce(
-                (a, b) => Number(a) + Number(b.groups[0].inputs[0]),
-                0
-              )
-            )
+          getSlicePosition(set.groups[0].inputs[0], index).start,
+          getSlicePosition(set.groups[0].inputs[0], index).end
         )}
       />
     ))
