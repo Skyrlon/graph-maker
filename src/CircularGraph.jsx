@@ -60,36 +60,56 @@ export default function CircularGraph({ data, graphData }) {
     return (number * (360 - 0.00001)) / total;
   };
 
+  const getTextPosition = (x, y, radius, startAngle, endAngle) => {
+    const angle = (endAngle - startAngle) / 2 + startAngle;
+    const position = polarToCartesian(x, y, radius, angle);
+    return { x: position.x, y: position.y };
+  };
+
   return (
-    data &&
-    data.sets.map((set, index) => (
-      <g key={set.id}>
-        <path
-          fill={set.color}
-          d={describeArc(
-            graphData.imageLength / 2,
-            graphData.imageLength / 2,
-            (graphData.imageLength - graphData.axisMargin) / 2,
-            getSlicePosition(set.groups[0].inputs[0], index).start,
-            getSlicePosition(set.groups[0].inputs[0], index).end
-          )}
-        />
-        <text
-          x={graphData.imageLength / 2}
-          y={graphData.imageLength / 4}
-          fontSize={graphData.textSize}
-          textAnchor="middle"
-          fill="white"
-          transform={`rotate(${
-            getSlicePosition(set.groups[0].inputs[0], index).start +
-            (getSlicePosition(set.groups[0].inputs[0], index).end -
-              getSlicePosition(set.groups[0].inputs[0], index).start) /
-              2
-          } ${graphData.imageLength / 2} ${graphData.imageLength / 2}) `}
-        >
-          {set.name}
-        </text>
-      </g>
-    ))
+    data && (
+      <>
+        {data.sets.map((set, index) => (
+          <path
+            key={set.id}
+            fill={set.color}
+            d={describeArc(
+              graphData.imageLength / 2,
+              graphData.imageLength / 2,
+              (graphData.imageLength - graphData.axisMargin) / 2,
+              getSlicePosition(set.groups[0].inputs[0], index).start,
+              getSlicePosition(set.groups[0].inputs[0], index).end
+            )}
+          />
+        ))}
+        {data.sets.map((set, index) => (
+          <text
+            x={
+              getTextPosition(
+                graphData.imageLength / 2,
+                graphData.imageLength / 2,
+                (graphData.imageLength - graphData.axisMargin) / 4,
+                getSlicePosition(set.groups[0].inputs[0], index).start,
+                getSlicePosition(set.groups[0].inputs[0], index).end
+              ).x
+            }
+            y={
+              getTextPosition(
+                graphData.imageLength / 2,
+                graphData.imageLength / 2,
+                (graphData.imageLength - graphData.axisMargin) / 4,
+                getSlicePosition(set.groups[0].inputs[0], index).start,
+                getSlicePosition(set.groups[0].inputs[0], index).end
+              ).y
+            }
+            fontSize={graphData.textSize}
+            textAnchor="middle"
+            fill="white"
+          >
+            {set.name}
+          </text>
+        ))}
+      </>
+    )
   );
 }
