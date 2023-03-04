@@ -93,45 +93,43 @@ export default function CircularGraph({ data, graphData }) {
     data && (
       <>
         {data.sets.map((set, index) => (
-          <path
-            key={set.id}
-            fill={set.color}
-            d={describeArc(
-              graphData.imageLength / 2,
-              graphData.imageLength / 2,
-              (graphData.imageLength - graphData.axisMargin) / 2,
-              getSlicePosition(set.groups[0].inputs[0], index).start,
-              getSlicePosition(set.groups[0].inputs[0], index).end
-            )}
-          />
-        ))}
-        {data.sets.map((set, index) => (
-          <text
-            key={set.id}
-            x={
-              getTextPosition(
+          <g key={set.id}>
+            <path
+              fill={set.color}
+              d={describeArc(
                 graphData.imageLength / 2,
                 graphData.imageLength / 2,
-                (graphData.imageLength - graphData.axisMargin) / 4,
+                (graphData.imageLength - graphData.axisMargin) / 2,
                 getSlicePosition(set.groups[0].inputs[0], index).start,
                 getSlicePosition(set.groups[0].inputs[0], index).end
-              ).x
-            }
-            y={
-              getTextPosition(
-                graphData.imageLength / 2,
-                graphData.imageLength / 2,
-                (graphData.imageLength - graphData.axisMargin) / 4,
-                getSlicePosition(set.groups[0].inputs[0], index).start,
-                getSlicePosition(set.groups[0].inputs[0], index).end
-              ).y
-            }
-            fontSize={graphData.textSize}
-            textAnchor="middle"
-            fill={setContrast(hexToRgb(set.color))}
-          >
-            {set.name}
-          </text>
+              )}
+            />
+            <text
+              x={
+                getTextPosition(
+                  graphData.imageLength / 2,
+                  graphData.imageLength / 2,
+                  (graphData.imageLength - graphData.axisMargin) / 4,
+                  getSlicePosition(set.groups[0].inputs[0], index).start,
+                  getSlicePosition(set.groups[0].inputs[0], index).end
+                ).x
+              }
+              y={
+                getTextPosition(
+                  graphData.imageLength / 2,
+                  graphData.imageLength / 2,
+                  (graphData.imageLength - graphData.axisMargin) / 4,
+                  getSlicePosition(set.groups[0].inputs[0], index).start,
+                  getSlicePosition(set.groups[0].inputs[0], index).end
+                ).y
+              }
+              fontSize={graphData.textSize}
+              textAnchor="middle"
+              fill={setContrast(hexToRgb(set.color))}
+            >
+              {set.name}
+            </text>
+          </g>
         ))}
       </>
     )
