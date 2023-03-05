@@ -61,9 +61,17 @@ export default function CircularGraph({ data, graphData }) {
   };
 
   const getTextPosition = (x, y, radius, startAngle, endAngle) => {
+    let posX, posY;
     const angle = (endAngle - startAngle) / 2 + startAngle;
     const position = polarToCartesian(x, y, radius, angle);
-    return { x: position.x, y: position.y };
+    if (endAngle - startAngle > (8 / 100) * 360) {
+      posX = position.x;
+      posY = position.y;
+    } else {
+      posX = position.x;
+      posY = polarToCartesian(x, y, radius * 2, angle).y - graphData.textSize;
+    }
+    return { x: posX, y: posY };
   };
 
   const hexToRgb = (hex) => {
@@ -125,7 +133,18 @@ export default function CircularGraph({ data, graphData }) {
               }
               fontSize={graphData.textSize}
               textAnchor="middle"
-              fill={setContrast(hexToRgb(set.color))}
+              fill={
+                calculateAngle(
+                  set.groups[0].inputs[0],
+                  data.sets.reduce(
+                    (a, b) => Number(a) + Number(b.groups[0].inputs[0]),
+                    0
+                  )
+                ) >
+                (8 / 100) * 360
+                  ? setContrast(hexToRgb(set.color))
+                  : "black"
+              }
             >
               {set.name}
             </text>
