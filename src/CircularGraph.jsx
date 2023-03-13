@@ -60,102 +60,44 @@ export default function CircularGraph({ data, graphData }) {
     return (number * (360 - 0.00001)) / total;
   };
 
-  const getTextPosition = (x, y, radius, startAngle, endAngle) => {
-    let posX, posY;
-    const angle = (endAngle - startAngle) / 2 + startAngle;
-    const position = polarToCartesian(x, y, radius, angle);
-    if (endAngle - startAngle > (8 / 100) * 360) {
-      posX = position.x;
-      posY = position.y;
-    } else {
-      const start = polarToCartesian(x, y, radius * 2, endAngle);
-      const end = polarToCartesian(x, y, radius * 2, startAngle);
-      posX =
-        endAngle < 180
-          ? (end.x - start.x) / 2 + start.x
-          : (start.x - end.x) / 2 + end.x;
-      posY =
-        endAngle < 90 || endAngle > 270
-          ? end.y - graphData.textSize
-          : end.y + graphData.textSize;
-    }
-    return { x: posX, y: posY };
-  };
-
-  const hexToRgb = (hex) => {
-    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    hex = hex.replace(shorthandRegex, function (m, r, g, b) {
-      return r + r + g + g + b + b;
-    });
-
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result
-      ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16),
-        }
-      : null;
-  };
-
-  function setContrast(rgb) {
-    const brightness = Math.round(
-      (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000
-    );
-    return brightness > 125 ? "black" : "white";
-  }
-
   return (
     data && (
       <>
         {data.sets.map((set, index) => (
+          <path
+            key={set.id}
+            fill={set.color}
+            d={describeArc(
+              graphData.imageLength / 2,
+              graphData.imageLength / 2,
+              (graphData.imageLength - graphData.axisMargin) / 2,
+              getSlicePosition(set.groups[0].inputs[0], index).start,
+              getSlicePosition(set.groups[0].inputs[0], index).end
+            )}
+          />
+        ))}
+        {data.sets.map((set, index) => (
           <g key={set.id}>
-            <path
+            <rect
               fill={set.color}
-              d={describeArc(
-                graphData.imageLength / 2,
-                graphData.imageLength / 2,
-                (graphData.imageLength - graphData.axisMargin) / 2,
-                getSlicePosition(set.groups[0].inputs[0], index).start,
-                getSlicePosition(set.groups[0].inputs[0], index).end
-              )}
-            />
-
-            <text
               x={
-                getTextPosition(
-                  graphData.imageLength / 2,
-                  graphData.imageLength / 2,
-                  (graphData.imageLength - graphData.axisMargin) / 4,
-                  getSlicePosition(set.groups[0].inputs[0], index).start,
-                  getSlicePosition(set.groups[0].inputs[0], index).end
-                ).x
+                graphData.imageLength -
+                graphData.axisMargin / 2 -
+                graphData.textSize
               }
               y={
-                getTextPosition(
-                  graphData.imageLength / 2,
-                  graphData.imageLength / 2,
-                  (graphData.imageLength - graphData.axisMargin) / 4,
-                  getSlicePosition(set.groups[0].inputs[0], index).start,
-                  getSlicePosition(set.groups[0].inputs[0], index).end
-                ).y
+                graphData.axisMargin +
+                graphData.textSize * index -
+                graphData.textSize / 2
               }
+              width={graphData.textSize / 2}
+              height={graphData.textSize / 2}
+            />
+            <text
+              x={graphData.imageLength - graphData.axisMargin / 2}
+              y={graphData.axisMargin + graphData.textSize * index}
               fontSize={graphData.textSize}
-              textAnchor={
-                getSlicePosition(set.groups[0].inputs[0], index).end < 180
-                  ? "start"
-                  : "end"
-              }
-              fill={
-                Number(set.groups[0].inputs[0]) >
-                (8 / 100) *
-                  data.sets.reduce(
-                    (a, b) => Number(a) + Number(b.groups[0].inputs[0]),
-                    0
-                  )
-                  ? setContrast(hexToRgb(set.color))
-                  : "black"
-              }
+              color={graphData.graphColor}
             >
               {set.name}
             </text>
