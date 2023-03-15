@@ -138,7 +138,7 @@ export default function LinearGraph({ data, graphData }) {
           strokeWidth={graphData.axisStrokeWidth}
           d={`M ${getPositionX(0)},${graphData.axisMargin / 2} 
                   L ${getPositionX(0)},${
-            graphData.imageLength - graphData.axisMargin / 2
+            graphData.imageHeight - graphData.axisMargin / 2
           } 
               `}
         />
@@ -259,11 +259,7 @@ export default function LinearGraph({ data, graphData }) {
             <g key={set.id}>
               <rect
                 fill={set.color}
-                x={
-                  graphData.imageLength -
-                  graphData.axisMargin / 2 -
-                  graphData.textSize
-                }
+                x={graphData.imageHeight}
                 y={
                   graphData.axisMargin +
                   graphData.textSize * index -
@@ -273,7 +269,7 @@ export default function LinearGraph({ data, graphData }) {
                 height={graphData.textSize / 2}
               />
               <text
-                x={graphData.imageLength - graphData.axisMargin / 2}
+                x={graphData.imageHeight + graphData.textSize}
                 y={graphData.axisMargin + graphData.textSize * index}
                 fontSize={graphData.textSize}
                 color={graphData.graphColor}

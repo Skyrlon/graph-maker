@@ -68,9 +68,9 @@ export default function CircularGraph({ data, graphData }) {
             key={set.id}
             fill={set.color}
             d={describeArc(
-              graphData.imageLength / 2,
-              graphData.imageLength / 2,
-              (graphData.imageLength - graphData.axisMargin) / 2,
+              graphData.imageHeight / 2,
+              graphData.imageHeight / 2,
+              (graphData.imageHeight - graphData.axisMargin) / 2,
               getSlicePosition(set.groups[0].inputs[0], index).start,
               getSlicePosition(set.groups[0].inputs[0], index).end
             )}
@@ -80,11 +80,7 @@ export default function CircularGraph({ data, graphData }) {
           <g key={set.id}>
             <rect
               fill={set.color}
-              x={
-                graphData.imageLength -
-                graphData.axisMargin / 2 -
-                graphData.textSize
-              }
+              x={graphData.imageHeight - graphData.textSize}
               y={
                 graphData.axisMargin +
                 graphData.textSize * index -
@@ -94,7 +90,7 @@ export default function CircularGraph({ data, graphData }) {
               height={graphData.textSize / 2}
             />
             <text
-              x={graphData.imageLength - graphData.axisMargin / 2}
+              x={graphData.imageHeight}
               y={graphData.axisMargin + graphData.textSize * index}
               fontSize={graphData.textSize}
               color={graphData.graphColor}

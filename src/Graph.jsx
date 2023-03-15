@@ -29,22 +29,25 @@ const StyledSvg = styled.svg.attrs((props) => ({
 `;
 
 function Graph({ data, sendSvgData }) {
-  const axisLength = 1000;
+  const imageWidth = 2000;
 
-  const axisMargin = axisLength * 0.3;
+  const imageHeight = (imageWidth * 3) / 4;
 
-  const imageLength = 2 * axisMargin + axisLength;
+  const axisLength = imageHeight * 0.8;
 
-  const axisStrokeWidth = axisLength / 100;
+  const axisMargin = (imageHeight - axisLength) / 2;
 
-  const textSize = imageLength / 40;
+  const axisStrokeWidth = imageHeight / 100;
+
+  const textSize = imageHeight / 30;
 
   const graphColor = "black";
 
   const graphData = {
     axisLength,
     axisMargin,
-    imageLength,
+    imageWidth,
+    imageHeight,
     axisStrokeWidth,
     textSize,
     graphColor,
@@ -93,9 +96,9 @@ function Graph({ data, sendSvgData }) {
             svgSize={
               sectionWidth > sectionHeight ? sectionHeight : sectionWidth
             }
-            viewBox={`0 0 ${imageLength} ${imageLength}`}
-            width={imageLength}
-            height={imageLength}
+            viewBox={`0 0 ${imageWidth} ${imageHeight}`}
+            width={imageWidth}
+            height={imageHeight}
             xmlns="http://www.w3.org/2000/svg"
             ref={handleSvg}
           >

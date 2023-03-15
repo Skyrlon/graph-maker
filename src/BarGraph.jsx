@@ -126,7 +126,7 @@ export default function BarGraph({ data, sendData, graphData }) {
           strokeWidth={graphData.axisStrokeWidth}
           d={`M ${getPositionX(0)},${graphData.axisMargin / 2} 
           L ${getPositionX(0)},${
-            graphData.imageLength - graphData.axisMargin / 2
+            graphData.imageHeight - graphData.axisMargin / 2
           } 
       `}
         />
@@ -166,8 +166,8 @@ export default function BarGraph({ data, sendData, graphData }) {
         </text>
         <text
           textAnchor="middle"
-          x={graphData.imageLength / 2}
-          y={graphData.imageLength - graphData.axisMargin / 4}
+          x={graphData.imageHeight / 2}
+          y={graphData.imageHeight - graphData.axisMargin / 4}
           fontSize={graphData.textSize}
           color={graphData.graphColor}
         >
@@ -198,7 +198,7 @@ export default function BarGraph({ data, sendData, graphData }) {
                 }
                 width={graphData.axisStrokeWidth * 5}
                 height={
-                  graphData.imageLength -
+                  graphData.imageHeight -
                   getPositionY(group.inputs[0]) -
                   graphData.axisMargin
                 }
