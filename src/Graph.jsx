@@ -56,8 +56,8 @@ function Graph({ data, sendSvgData }) {
   const handleSvg = useCallback(
     (node) => {
       sendSvgData({
-        width: graphData.imageLength,
-        height: graphData.imageLength,
+        width: graphData.imageWidth,
+        height: graphData.imageHeight,
         node,
       });
     },
