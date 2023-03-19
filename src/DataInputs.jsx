@@ -297,7 +297,9 @@ function DataInputs({ dataSubmit }) {
     setAreAllInputsNumbers(areAllInputsNumeric);
 
     if (
-      !sameValues.some((set) => set.duplicates.length > 0) &&
+      (!sameValues.some((set) => set.duplicates.length > 0) ||
+        (sameValues.some((set) => set.duplicates.length > 0) &&
+          graphType !== "linear")) &&
       areAllInputsNumeric.every((set) =>
         set.groups.every((group) => group.inputs.every((input) => !!input))
       )
@@ -457,6 +459,7 @@ function DataInputs({ dataSubmit }) {
                       }
                       error={
                         (index === 0 &&
+                          graphType === "linear" &&
                           !!inputsWithSameValue.some(
                             (x) =>
                               x.id === set.id &&
@@ -472,6 +475,7 @@ function DataInputs({ dataSubmit }) {
                       helperText={
                         <>
                           {index === 0 &&
+                          graphType === "linear" &&
                           !!inputsWithSameValue.some(
                             (x) =>
                               x.id === set.id &&
