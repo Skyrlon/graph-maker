@@ -71,6 +71,7 @@ export default function ColorPicker({ color, changeColor, children }) {
           width: "1.25rem",
           height: "1.25rem",
           backgroundColor: color,
+          border: "1px solid",
           "&:hover": { backgroundColor: color, opacity: 0.75 },
         }}
         onClick={handleClick}

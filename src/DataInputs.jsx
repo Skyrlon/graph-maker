@@ -50,6 +50,8 @@ function DataInputs({ dataSubmit }) {
 
   const [areAllInputsNumbers, setAreAllInputsNumbers] = useState([]);
 
+  const [inputsWithSameValue, setInputsWithSameValue] = useState([]);
+
   const graphTypesList = [
     { name: "linear", setName: "line" },
     { name: "bar", setName: "bar" },
@@ -67,8 +69,6 @@ function DataInputs({ dataSubmit }) {
   const [setsInputs, setSetsInputs] = useState([]);
 
   const [expandedAccordions, setExpandedAccordions] = useState([0]);
-
-  const [inputsWithSameValue, setInputsWithSameValue] = useState([]);
 
   const findDuplicates = (array, index) => {
     let sortedArray = [...array].sort(
