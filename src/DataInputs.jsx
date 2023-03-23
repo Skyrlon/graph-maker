@@ -382,7 +382,7 @@ function DataInputs({ dataSubmit }) {
             marginBottom: "1rem",
           }}
         >
-          <Typography sx={{ marginRight: "1rem" }}>Bars Colors</Typography>
+          <Typography sx={{ marginRight: "1rem" }}>Sub bars colors</Typography>
           <ButtonGroup
             sx={{
               display: "flex",
