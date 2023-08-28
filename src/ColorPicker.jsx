@@ -14,6 +14,7 @@ const StyledColorPicker = styled.div`
   & .popover {
     position: absolute;
     z-index: 2;
+    transform: translate(-80%)
   }
 
   & .cover {
