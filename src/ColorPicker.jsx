@@ -14,7 +14,9 @@ const StyledColorPicker = styled.div`
   & .popover {
     position: absolute;
     z-index: 2;
+    width: 200px;
     transform: translate(-80%)
+
   }
 
   & .cover {
@@ -23,6 +25,12 @@ const StyledColorPicker = styled.div`
     right: 0px;
     bottom: 0px;
     left: 0px;
+  }
+
+  @media (max-width: 1110px) {
+    & .popover {
+      width: 150px;
+    }
 },`;
 
 export default function ColorPicker({ color, changeColor, children }) {
@@ -83,7 +91,7 @@ export default function ColorPicker({ color, changeColor, children }) {
       {displayColorPicker ? (
         <div className="popover">
           <div className="cover" onClick={handleClose} />
-          <SketchPicker color={color} onChange={handleChange} />
+          <SketchPicker color={color} onChange={handleChange} width="100%" />
         </div>
       ) : null}
     </StyledColorPicker>

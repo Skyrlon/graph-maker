@@ -36,7 +36,7 @@ const StyledDataInputs = styled(Box)`
 
   @media (max-width: 767px) {
     height: 33%;
-    overflow: hidden;
+    overflow: auto;
     & .scroller {
       width: 99%;
       height: 50%;
