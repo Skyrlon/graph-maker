@@ -5,6 +5,8 @@ import styled from "styled-components";
 import { useState } from "react";
 import Graph from "./Graph";
 import DownloadSection from "./DownloadSection";
+import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
+import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
 
 const StyledApp = styled.div`
   @media screen and (max-width: 767px) {
@@ -61,14 +63,17 @@ const StyledBox = styled(Box)`
       }
       &-button {
         &-top {
-          display: block;
+          display: flex;
+          flex-direction: column;
           z-index: 2;
           position: absolute;
           left: 0;
           top: 56px;
         }
         &-bottom {
-          display: block;
+          display: flex;
+          flex-direction: column;
+          z-index: 2;
           position: absolute;
           left: 0;
           bottom: 0;
@@ -108,6 +113,7 @@ function App() {
               setSectionShowed(sectionShowed === "graph" ? "inputs" : "graph")
             }
           >
+            <KeyboardDoubleArrowUpIcon />
             {sectionShowed === "graph" ? "Inputs" : "Graph"}
           </Button>
         )}
@@ -126,6 +132,7 @@ function App() {
             }
           >
             {sectionShowed === "inputs" ? "Graph" : "Download"}
+            <KeyboardDoubleArrowDownIcon />
           </Button>
         )}
       </StyledBox>
