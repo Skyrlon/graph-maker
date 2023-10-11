@@ -519,10 +519,10 @@ function DataInputs({ dataSubmit }) {
             )}
           </Accordion>
         ))}
-        <Button onClick={addSet}>
-          Add new {graphTypesList.find((x) => x.name === graphType).setName}
-        </Button>
       </div>
+      <Button onClick={addSet}>
+        Add new {graphTypesList.find((x) => x.name === graphType).setName}
+      </Button>
       <Button
         disabled={setsInputs.some((set) =>
           set.groups.some((group) =>
