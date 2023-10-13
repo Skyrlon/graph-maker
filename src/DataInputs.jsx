@@ -334,11 +334,16 @@ function DataInputs({ dataSubmit }) {
         select
         variant="outlined"
         label="Graph type"
+        sx={{ width: "10rem", textTransform: "capitalize" }}
         value={graphType}
         onChange={(e) => setGraphType(e.target.value)}
       >
         {graphTypesList.map((graphTypeItem) => (
-          <MenuItem key={graphTypeItem.name} value={graphTypeItem.name}>
+          <MenuItem
+            key={graphTypeItem.name}
+            value={graphTypeItem.name}
+            sx={{ width: "10rem", textTransform: "capitalize" }}
+          >
             {graphTypeItem.name}
           </MenuItem>
         ))}
