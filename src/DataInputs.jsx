@@ -382,7 +382,8 @@ function DataInputs({ dataSubmit }) {
         <Box
           sx={{
             display: "flex",
-            flexDirection: "row",
+            flexDirection: "column",
+            justifyContent: "center",
             width: "20rem",
             marginBottom: "1rem",
           }}
@@ -392,6 +393,7 @@ function DataInputs({ dataSubmit }) {
             sx={{
               display: "flex",
               flexDirection: "row",
+              justifyContent: "center",
               flexWrap: "wrap",
             }}
           >
