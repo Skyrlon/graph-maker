@@ -446,14 +446,22 @@ function DataInputs({ dataSubmit }) {
               </Box>
             </AccordionSummary>
 
-            <AccordionDetails>
+            <AccordionDetails
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
               {set.groups.map((group) => (
                 <Box
                   key={group.id}
                   sx={{
+                    position: "relative",
                     display: "flex",
                     flexDirection: "row",
-                    justifyContent: "space-between",
+                    justifyContent: "center",
+                    width: "80%",
                   }}
                 >
                   {group.inputs.map((input, index) => (
@@ -508,7 +516,15 @@ function DataInputs({ dataSubmit }) {
                     group.id === 0 ||
                     (graphType === "linear" && group.id === 1)
                   ) && (
-                    <IconButton onClick={() => deleteGroup(set.id, group.id)}>
+                    <IconButton
+                      sx={{
+                        position: "absolute",
+                        top: "0%",
+                        left: "100%",
+                        transform: "translate(0%, 25%)",
+                      }}
+                      onClick={() => deleteGroup(set.id, group.id)}
+                    >
                       <Delete />
                     </IconButton>
                   )}
