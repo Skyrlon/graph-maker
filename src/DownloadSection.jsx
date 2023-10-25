@@ -26,6 +26,10 @@ const StyledDownloadSection = styled.section`
     flex-direction: row;
     justify-content: space-around;
     align-content: center;
+
+    & > * {
+      width: 25%;
+    }
   }
 
   @media (max-width: 767px) {
