@@ -30,6 +30,7 @@ const StyledDataInputs = styled(Box)`
     align-items: center;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
+    width: 90%;
     height: 75%;
     overflow-y: auto;
   }
@@ -38,7 +39,7 @@ const StyledDataInputs = styled(Box)`
     height: 33%;
     overflow: auto;
     & .scroller {
-      width: 99%;
+      width: 90%;
       height: 50%;
       overflow-y: auto;
     }
