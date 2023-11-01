@@ -361,16 +361,18 @@ function DataInputs({ dataSubmit }) {
           sx={{
             display: "flex",
             flexDirection: "row",
-            justifyContent: "space-between",
+            justifyContent: "space-around",
           }}
         >
           <TextField
+            sx={{ width: "40%" }}
             label="x-axis"
             variant="standard"
             onChange={handleFirstAxisInputChange}
             value={axisInputs.first}
           />
           <TextField
+            sx={{ width: "40%" }}
             label="y-axis"
             variant="standard"
             onChange={handleSecondAxisInputChange}
