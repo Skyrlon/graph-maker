@@ -426,6 +426,9 @@ function DataInputs({ dataSubmit }) {
               expandIcon={
                 <ExpandMoreIcon onClick={() => toggleAcordion(set.id)} />
               }
+              sx={{
+                position: "relative",
+              }}
             >
               <TextField
                 variant="standard"
@@ -434,9 +437,10 @@ function DataInputs({ dataSubmit }) {
               />
               <Box
                 sx={{
-                  position: "relative",
+                  position: "absolute",
                   display: "flex",
                   flexDirection: "row",
+                  left: "80%",
                 }}
               >
                 <ColorPicker
